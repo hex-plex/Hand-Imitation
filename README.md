@@ -14,6 +14,6 @@ Sayonara
 
 ## Attendence
 1. Somnath ([hex-plex](https://github.com/hex-plex))
-
-
-put in your names so as to confirm your presence
+>put in your names so as to confirm your presence
+## Chat
+This is our technical chat space if you have a problem link it here someone will take a look
