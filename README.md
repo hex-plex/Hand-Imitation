@@ -12,7 +12,7 @@ This a project for robocamp in which we try to make a robotic arm which would im
 Sayonara
 
 
-## Attendence
+## Attendance
 1. Somnath ([hex-plex](https://github.com/hex-plex))
 2. Yash ([numberbee7070](https://github.com/numberbee7070))
 >put in your names so as to confirm your presence
