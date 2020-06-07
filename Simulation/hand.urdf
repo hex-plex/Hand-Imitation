@@ -7,7 +7,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" /> 
             <geometry>
-                <mesh filename="meshes/arm_reduced.stl" scale=".001 .001 .003"/>
+                <mesh filename="meshes/arm_reduced.stl" scale=".0005 .0005 .0015"/>
             </geometry>
             <material name="Material"/>
         </visual>
@@ -21,14 +21,14 @@
     <link name="palm" >
         <visual> 
             <geometry>
-                <mesh filename="meshes/palm_reduced.stl" scale=".01 .01 .01"/>
+                <mesh filename="meshes/palm_reduced.stl" scale=".005 .005 .005"/>
             </geometry>
             <material name="Material"/>
         </visual>
     </link>
     
     <joint name="wrist" type="fixed">
-        <origin xyz="-0.1 0 5" rpy="0 0 0" />
+        <origin xyz="-0.05 0 2.5" rpy="0 0 0" />
         <parent link="arm" />
         <child link="palm" />
     </joint>
@@ -38,7 +38,7 @@
     <link name="thumb0">
         <visual>
             <geometry>
-                <mesh filename="meshes/finger_long_reduced.stl" scale=".01 .01 .01"/>
+                <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
             </geometry>
             <material name="Material"/>
         </visual>
@@ -46,7 +46,7 @@
     <link name="thumb1">
         <visual>
             <geometry>
-                <mesh filename="meshes/finger_long_reduced.stl" scale=".01 .01 .01"/>
+                <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
             </geometry>
             <material name="Material"/>
         </visual>
@@ -55,14 +55,14 @@
     <joint name="thumbpalm" type="revolute">
         <parent link="palm" />
         <child link="thumb0" />
-        <origin xyz="-0.4 0 -0.9" rpy="0 -0.80 0" />
+        <origin xyz="-0.2 0 -0.45" rpy="0 -0.80 0" />
         <axis xyz="0.5 0 0.5" />
         <limit effort="1000.0" velocity="10.0"/>
     </joint>
     <joint name="thumb_0_1" type="revolute">
         <parent link="thumb0" />
         <child link="thumb1" />
-        <origin xyz="0 0 0.6" rpy="0 0 0"/>
+        <origin xyz="0 0 0.3" rpy="0 0 0"/>
         <axis xyz="1 0 0" />
         <limit effort="1000.0" velocity="10.0"/>
     </joint>
@@ -72,7 +72,7 @@
     <link name="index0">
         <visual>
             <geometry>
-                <mesh filename="meshes/finger_long_reduced.stl" scale=".01 .01 .01"/>
+                <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
             </geometry>
             <material name="Material"/>
         </visual>
@@ -80,7 +80,7 @@
     <link name="index1">
         <visual>
             <geometry>
-                <mesh filename="meshes/finger_long_reduced.stl" scale=".01 .01 .01"/>
+                <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
             </geometry>
             <material name="Material"/>
         </visual>
@@ -89,14 +89,14 @@
     <joint name="indexpalm" type="revolute">
         <parent link="palm" />
         <child link="index0" />
-        <origin xyz="-0.3 0 0.7" rpy="0 -0.1 0"/>
+        <origin xyz="-0.15 0 0.35" rpy="0 -0.1 0"/>
         <axis xyz="0.98 0 0.1" />
         <limit effort="1000.0" velocity="10.0"/>
     </joint>
     <joint name="index_0_1" type="revolute">
         <parent link="index0" />
         <child link="index1" />
-        <origin xyz="0 0 0.6" rpy="0 0 0"/>
+        <origin xyz="0 0 0.3" rpy="0 0 0"/>
         <axis xyz="1 0 0" />
         <limit effort="1000.0" velocity="10.0"/>
     </joint>
@@ -106,7 +106,7 @@
     <link name="middle0">
         <visual>
             <geometry>
-                <mesh filename="meshes/finger_long_reduced.stl" scale=".01 .01 .01"/>
+                <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
             </geometry>
             <material name="Material"/>
         </visual>
@@ -114,7 +114,7 @@
     <link name="middle1">
         <visual>
             <geometry>
-                <mesh filename="meshes/finger_long_reduced.stl" scale=".01 .01 .01"/>
+                <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
             </geometry>
             <material name="Material"/>
         </visual>
@@ -123,14 +123,14 @@
     <joint name="middlepalm" type="revolute">
         <parent link="palm" />
         <child link="middle0" />
-        <origin xyz="0.15 0 0.8" rpy="0 0 0"/>
+        <origin xyz="0.075 0 0.4" rpy="0 0 0"/>
         <axis xyz="1 0 0" />
         <limit effort="1000.0" velocity="10.0"/>
     </joint>
     <joint name="middle_0_1" type="revolute">
         <parent link="middle0" />
         <child link="middle1" />
-        <origin xyz="0 0 0.6" rpy="0 0 0"/>
+        <origin xyz="0 0 0.3" rpy="0 0 0"/>
         <axis xyz="1 0 0" />
         <limit effort="1000.0" velocity="10.0"/>
     </joint>
@@ -140,7 +140,7 @@
     <link name="ring0">
         <visual>
             <geometry>
-                <mesh filename="meshes/finger_long_reduced.stl" scale=".01 .01 .01"/>
+                <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
             </geometry>
             <material name="Material"/>
         </visual>
@@ -148,7 +148,7 @@
     <link name="ring1">
         <visual>
             <geometry>
-                <mesh filename="meshes/finger_long_reduced.stl" scale=".01 .01 .01"/>
+                <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
             </geometry>
             <material name="Material"/>
         </visual>
@@ -157,14 +157,14 @@
     <joint name="ringpalm" type="revolute">
         <parent link="palm" />
         <child link="ring0" />
-        <origin xyz="0.6 0 0.7" rpy="0 0.2 0"/>
+        <origin xyz="0.3 0 0.35" rpy="0 0.2 0"/>
         <axis xyz="0.98 0 -0.1" />
         <limit effort="1000.0" velocity="10.0"/>
     </joint>
     <joint name="ring_0_1" type="revolute">
         <parent link="ring0" />
         <child link="ring1" />
-        <origin xyz="0 0 0.6" rpy="0 0 0"/>
+        <origin xyz="0 0 0.3" rpy="0 0 0"/>
         <axis xyz="1 0 0" />
         <limit effort="1000.0" velocity="10.0"/>
     </joint>
@@ -173,7 +173,7 @@
     <link name="little0">
         <visual>
             <geometry>
-                <mesh filename="meshes/finger_long_reduced.stl" scale=".01 .01 .01"/>
+                <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
             </geometry>
             <material name="Material"/>
         </visual>
@@ -181,7 +181,7 @@
     <link name="little1">
         <visual>
             <geometry>
-                <mesh filename="meshes/finger_short_reduced.stl" scale=".01 .01 .01"/>
+                <mesh filename="meshes/finger_short_reduced.stl" scale=".005 .005 .005"/>
             </geometry>
             <material name="Material"/>
         </visual>
@@ -190,17 +190,16 @@
     <joint name="littlepalm" type="revolute">
         <parent link="palm" />
         <child link="little0" />
-        <origin xyz="1 0 0.4" rpy="0 0.5 0"/>
+        <origin xyz="0.5 0 0.2" rpy="0 0.5 0"/>
         <axis xyz="0.9 0 -0.27" />
         <limit effort="1000.0" velocity="10.0"/>
     </joint>
     <joint name="little_0_1" type="revolute">
         <parent link="little0" />
         <child link="little1" />
-        <origin xyz="0 0 0.6" rpy="0 0 0"/>
+        <origin xyz="0 0 0.3" rpy="0 0 0"/>
         <axis xyz="1 0 0" />
         <limit effort="1000.0" velocity="10.0"/>
     </joint>
-
 
 </robot>
