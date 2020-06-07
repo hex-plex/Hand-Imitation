@@ -1,6 +1,8 @@
 import pybullet as p
 import time
 import os
+from matplotlib import pyplot as plt
+import numpy as np
 
 pclient = p.connect(p.GUI)
 p.setAdditionalSearchPath(os.path.abspath("Simulation"))
@@ -25,6 +27,22 @@ finger_joint_indices = (
     (8, 9),  # ring
     (10, 11),  # little
 )
+
+
+def getImage():
+    """
+    this function returns hand image in RGBA format
+    """
+
+    position = (0, -3, 2)
+    targetPosition = (0, 0, 2)
+    viewMatrix = p.computeViewMatrix(
+        position, targetPosition, cameraUpVector=[0, 0, 1])
+    projectionMatrix = p.computeProjectionMatrixFOV(60, 1, 0.02, 5)
+    img = p.getCameraImage(512, 512, viewMatrix, projectionMatrix,
+                           renderer=p.ER_BULLET_HARDWARE_OPENGL)
+    img = np.reshape(img[2], (512, 512, 4))
+    return img.astype('uint8')
 
 
 class finger():
