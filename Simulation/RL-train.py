@@ -61,3 +61,20 @@ def fit(agents,envi,human=False,sti=1):
         return_agents.append(rew)
     return return_agents
 
+def run_agents(agents):
+    envs = []
+    for i in range(noc):
+        envs.append(env)
+    env.reset()
+
+    agents = np.array(agents)
+    agents = agents.reshape(noc,-1)
+    result_id=[]
+    for i in range(noc):
+        result_id.append(fit(agents[i],envs[i]))
+
+    results = result_id
+    results = np.array(results,dtype=int)
+    return results.reshape(agents.shape[0]*agents.shape[1],-1)
+
+
