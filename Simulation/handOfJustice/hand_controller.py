@@ -4,29 +4,6 @@ import os
 from matplotlib import pyplot as plt
 import numpy as np
 
-pclient = p.connect(p.GUI)
-p.setAdditionalSearchPath(os.path.abspath("Simulation"))
-handid = p.loadURDF("hand.urdf")
-p.setRealTimeSimulation(1)
-
-p.createConstraint(
-    handid,
-    -1,
-    -1,
-    -1,
-    p.JOINT_FIXED,
-    (0, 0, 1),
-    (0, 0, 0),
-    (0, 0, 0),
-)
-
-finger_joint_indices = (
-    (2, 3),  # thumb
-    (4, 5),  # index
-    (6, 7),  # middle
-    (8, 9),  # ring
-    (10, 11),  # little
-)
 
 
 def getImage():
@@ -73,6 +50,31 @@ class robo_hand():
 
 
 if __name__ == '__main__':
+    pclient = p.connect(p.GUI)
+    p.setAdditionalSearchPath(os.path.abspath("Simulation"))
+    handid = p.loadURDF("hand.urdf")
+    p.setRealTimeSimulation(1)
+    for i in range(p.getNumJoints(handid)):
+        print(p.getJointInfo(bodyUniqueId=handid,jointIndex=i))
+          
+    p.createConstraint(
+        handid,
+        -1,
+        -1,
+        -1,
+        p.JOINT_FIXED,
+        (0, 0, 1),
+        (0, 0, 0),
+        (0, 0, 0),
+    )
+
+    finger_joint_indices = (
+        (2, 3),  # thumb
+        (4, 5),  # index
+        (6, 7),  # middle
+        (8, 9),  # ring
+        (10, 11),  # little
+    )
     hand = robo_hand()
     while True:
         # thumb
