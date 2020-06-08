@@ -3,22 +3,33 @@
     <link name="base">
         <origin xyz="0 0 0" />
     </link>
+
     <link name="arm">
+        <inertial>
+            <mass value="0.001" />
+            <inertia iyy="1e-5" ixx="1e-5" izz="1e-5" ixy="1e-5" ixz="1e-5" iyz="1e-5" />
+        </inertial>
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" /> 
             <geometry>
-                <mesh filename="meshes/arm_reduced.stl" scale=".0005 .0005 .0015"/>
+                <mesh filename="meshes/arm_reduced.stl" scale="4e-4 4e-4 1.2e-3"/>
             </geometry>
             <material name="Material"/>
         </visual>
     </link>
 
-    <joint name="armbase" type="fixed">
+    <joint name="armbase" type="revolute">
         <parent link="base" />
         <child link="arm" />
+        <axis xyz="0 1 0" />
+        <limit effort="10" velocity="0.01"/>
     </joint>
 
     <link name="palm" >
+        <inertial>
+            <mass value="0.0001" />
+            <inertia iyy="0.0" ixx="0.0" izz="0.0" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
         <visual> 
             <geometry>
                 <mesh filename="meshes/palm_reduced.stl" scale=".005 .005 .005"/>
@@ -28,7 +39,7 @@
     </link>
     
     <joint name="wrist" type="fixed">
-        <origin xyz="-0.05 0 2.5" rpy="0 0 0" />
+        <origin xyz="-0.05 0 2.1" rpy="0 0 0" />
         <parent link="arm" />
         <child link="palm" />
     </joint>
@@ -36,6 +47,10 @@
 
     <!-- Thumb-->
     <link name="thumb0">
+        <inertial>
+            <mass value="0.0001" />
+            <inertia iyy="0.0" ixx="0.0" izz="0.0" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
         <visual>
             <geometry>
                 <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
@@ -44,6 +59,10 @@
         </visual>
     </link>
     <link name="thumb1">
+        <inertial>
+            <mass value="0.0001" />
+            <inertia iyy="0.0" ixx="0.0" izz="0.0" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
         <visual>
             <geometry>
                 <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
@@ -70,6 +89,10 @@
 
     <!-- index -->
     <link name="index0">
+        <inertial>
+            <mass value="0.0001" />
+            <inertia iyy="0.0" ixx="0.0" izz="0.0" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
         <visual>
             <geometry>
                 <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
@@ -78,6 +101,10 @@
         </visual>
     </link>
     <link name="index1">
+        <inertial>
+            <mass value="0.0001" />
+            <inertia iyy="0.0" ixx="0.0" izz="0.0" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
         <visual>
             <geometry>
                 <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
@@ -104,6 +131,10 @@
 
     <!-- middle -->
     <link name="middle0">
+        <inertial>
+            <mass value="0.0001" />
+            <inertia iyy="0.0" ixx="0.0" izz="0.0" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
         <visual>
             <geometry>
                 <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
@@ -112,6 +143,10 @@
         </visual>
     </link>
     <link name="middle1">
+        <inertial>
+            <mass value="0.0001" />
+            <inertia iyy="0.0" ixx="0.0" izz="0.0" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
         <visual>
             <geometry>
                 <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
@@ -138,6 +173,10 @@
 
     <!-- ring -->
     <link name="ring0">
+        <inertial>
+            <mass value="0.0001" />
+            <inertia iyy="0.0" ixx="0.0" izz="0.0" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
         <visual>
             <geometry>
                 <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
@@ -146,6 +185,10 @@
         </visual>
     </link>
     <link name="ring1">
+        <inertial>
+            <mass value="0.0001" />
+            <inertia iyy="0.0" ixx="0.0" izz="0.0" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
         <visual>
             <geometry>
                 <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
@@ -171,6 +214,10 @@
 
     <!-- little -->
     <link name="little0">
+        <inertial>
+            <mass value="0.0001" />
+            <inertia iyy="0.0" ixx="0.0" izz="0.0" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
         <visual>
             <geometry>
                 <mesh filename="meshes/finger_long_reduced.stl" scale=".005 .005 .005"/>
@@ -179,6 +226,10 @@
         </visual>
     </link>
     <link name="little1">
+        <inertial>
+            <mass value="0.0001" />
+            <inertia iyy="0.0" ixx="0.0" izz="0.0" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
         <visual>
             <geometry>
                 <mesh filename="meshes/finger_short_reduced.stl" scale=".005 .005 .005"/>

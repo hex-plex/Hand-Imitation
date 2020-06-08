@@ -63,13 +63,30 @@ class finger():
 
 class robo_hand():
     fingers = list()
+    elbow_index = 0
 
     def __init__(self):
+        self.wave_arm(0)
         for indices in finger_joint_indices:
             self.fingers.append(finger(*indices))
 
     def fold_finger(self, index, angle):
         self.fingers[index].rotate(angle)
+    
+    def wave_arm(self, angle):
+        # p.resetJointState(
+        #     bodyUniqueId=handid,
+        #     jointIndex=self.elbow_index,
+        #     targetValue=angle,
+        # )
+        p.setJointMotorControl2(
+            bodyIndex = handid,
+            jointIndex = self.elbow_index,
+            controlMode = p.POSITION_CONTROL,
+            targetPosition = angle,
+            force = 0.5,
+            maxVelocity = 0.4
+        )
 
 
 if __name__ == '__main__':
@@ -90,7 +107,9 @@ if __name__ == '__main__':
         # little
         hand.fold_finger(4, 1.5)
         time.sleep(1)
-
+        # elbow
+        hand.wave_arm(0.5)
+        time.sleep(1)
         # thumb
         hand.fold_finger(0, 0)
         time.sleep(1)
@@ -105,4 +124,7 @@ if __name__ == '__main__':
         time.sleep(1)
         # little
         hand.fold_finger(4, 0)
+        time.sleep(1)
+        # elbow
+        hand.wave_arm(0.0)
         time.sleep(1)
