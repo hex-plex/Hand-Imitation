@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import gym
 from time import sleep
-
+from _thread ## Multithreaded is slower than single threaded
 class agentAI(nn.Module):
     def __init__(self):
         super().__init__()
@@ -47,16 +47,16 @@ def fit(agents,envi,human=False,sti=1):
         observation = envi.reset()
         rew=0
         while True:
-            if human:
-                time.sleep(sti)
             observation = torch.tensor(observation)
-            inp = observation.type('torch.FloatTensor').view(-1,1)
+            inp = observation.type('torch.FloatTensor')
             action = agent(inp).detach().numpy()[0] ## This is gonna be list of 12 no of  
             for i in range(len(action)):
                 action[i]*=envi.action_space.high[i]
             observation,reward,done,info = envi.step(action)
             rew =rew+reward
             if (done):
+                if human:
+                    time.sleep(1)
                 break
         return_agents.append(rew)
     return return_agents
@@ -71,10 +71,17 @@ def run_agents(agents):
     agents = agents.reshape(noc,-1)
     result_id=[]
     for i in range(noc):
+        # _thread.start_new_thread(lambda x : result_id.append(fit(agents[i],envs[i])),())
         result_id.append(fit(agents[i],envs[i]))
 
+    # while len(result_id)!=noc:pass
     results = result_id
     results = np.array(results,dtype=int)
     return results.reshape(agents.shape[0]*agents.shape[1],-1)
 
-
+def run_n(agents,n):
+    avg_metric = np.zeros(len(agents),1)
+    for i in range(n):
+       avg_matrix += run_agents(agents)
+    avg_metric/=n
+    return avg_metric.reshape(agents)

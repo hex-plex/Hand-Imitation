@@ -11,8 +11,8 @@ import hand_controller as hc
 class HandOfJustice(gym.Env):
     metadata = {'render.modes':['human']}
 
-    def __init__(self,mod="Direct"):
-        self.cap = cv2.VideoCapture(0) ## Set if a particular usb cam is used
+    def __init__(self,cap=cv2.VideoCapture(0),mod="Direct",threshold=150):
+        self.cap =  cap
         if mod == "GUI":
             p.connect(p.GUI)
             p.resetDebugVisualizerCamera(cameraDistance=2, cameraYaw=0, cameraPitch=-40, cameraTargetPosition=[0,0,2])
@@ -25,7 +25,7 @@ class HandOfJustice(gym.Env):
         self.observation_space = spaces.Box(0,2.55,shape=(56,56,3))## remember to rescale
         ## Remember to change this
         ## Initilize the hand
-        self.threshold=150
+        self.threshold=threshold ## Find a good one and set as default
         self.seed(int(time.time()))
         ## THis is to match up the no of pixels of our PHATTTT
         
@@ -51,7 +51,8 @@ class HandOfJustice(gym.Env):
         ## Initilize the hand same like the one done in __init__
         ## Or just call to reset to that point
         ## This can be skipped if a continues feel is to be got
-        self.target = self.cap.read()[1]     
+        self.target = self.cap.read()[1]
+        cv2.waitKey(1)
         ## Take in a feed
         ## observation is the target image
         return self.target
