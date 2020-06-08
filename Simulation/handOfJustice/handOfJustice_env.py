@@ -26,9 +26,12 @@ class HandOfJustice(gym.Env):
         ## Remember to change this
         ## Initilize the hand
         self.threshold=150
+        self.seed(int(time.time()))
         ## THis is to match up the no of pixels of our PHATTTT
         
-        
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        return [seed]
 
     def step(self,action):
         armCam=np.zeros(56,56,3)## take in an input from the pybullet camera
