@@ -30,23 +30,58 @@ class finger():
         self.lower = lower_joint
         self.upper = upper_joint
 
-    def rotate(self, angle):
+    def rotate(self, lower_angle, upper_angle):
         p.setJointMotorControlArray(bodyIndex=handid,
                                     jointIndices=(self.lower, self.upper),
                                     controlMode=p.POSITION_CONTROL,
-                                    targetPositions=(angle, angle),
+                                    targetPositions=(lower_angle, upper_angle),
                                     forces=[500, 500])
 
 
 class robo_hand():
     fingers = list()
+    elbow_index = 0
+    wrist_index = 1
 
     def __init__(self):
+        self.wave_arm(0)
         for indices in finger_joint_indices:
             self.fingers.append(finger(*indices))
 
-    def fold_finger(self, index, angle):
-        self.fingers[index].rotate(angle)
+    def fold_finger(self, index, lower_angle, upper_angle):
+        self.fingers[index].rotate(lower_angle, upper_angle)
+    
+    def wave_arm(self, angle):
+        # p.resetJointState(
+        #     bodyUniqueId=handid,
+        #     jointIndex=self.elbow_index,
+        #     targetValue=angle,
+        # )
+        p.setJointMotorControl2(
+            bodyIndex = handid,
+            jointIndex = self.elbow_index,
+            controlMode = p.POSITION_CONTROL,
+            targetPosition = angle,
+            force = 0.5,
+            maxVelocity = 0.4
+        )
+
+    def move_wrist(self, angle):
+        p.setJointMotorControl2(
+            bodyIndex = handid,
+            jointIndex = self.wrist_index,
+            controlMode = p.POSITION_CONTROL,
+            targetPosition = angle,
+            force = 0.5,
+            maxVelocity = 0.4
+        )
+    
+    def array_input(arr):
+        assert len(arr)==12
+        for i in range(5):
+            self.fingers[i].rotate(*arr[i])
+        self.move_wrist(*arr[5])
+        self.wave_arm(*arr[6])
 
 
 if __name__ == '__main__':
@@ -77,34 +112,45 @@ if __name__ == '__main__':
     )
     hand = robo_hand()
     while True:
+        # wrist
+        hand.move_wrist(0.4)
+        time.sleep(1)
         # thumb
-        hand.fold_finger(0, 1.5)
+        hand.fold_finger(0, 1.5, 1.5)
         time.sleep(1)
         # index
-        hand.fold_finger(1, 1.5)
+        hand.fold_finger(1, 1.5, 1.5)
         time.sleep(1)
         # middle
-        hand.fold_finger(2, 1.5)
+        hand.fold_finger(2, 1.5, 1.5)
         time.sleep(1)
         # ring
-        hand.fold_finger(3, 1.5)
+        hand.fold_finger(3, 1.5, 1.5)
         time.sleep(1)
         # little
-        hand.fold_finger(4, 1.5)
+        hand.fold_finger(4, 1.5, 1.5)
         time.sleep(1)
-
+        # elbow
+        hand.wave_arm(0.5)
+        time.sleep(1)
+        # wrist
+        hand.move_wrist(0)
+        time.sleep(1)
         # thumb
-        hand.fold_finger(0, 0)
+        hand.fold_finger(0, 0, 0)
         time.sleep(1)
         # index
-        hand.fold_finger(1, 0)
+        hand.fold_finger(1, 0, 0)
         time.sleep(1)
         # middle
-        hand.fold_finger(2, 0)
+        hand.fold_finger(2, 0, 0)
         time.sleep(1)
         # ring
-        hand.fold_finger(3, 0)
+        hand.fold_finger(3, 0, 0)
         time.sleep(1)
         # little
-        hand.fold_finger(4, 0)
+        hand.fold_finger(4, 0, 0)
+        time.sleep(1)
+        # elbow
+        hand.wave_arm(0.0)
         time.sleep(1)
