@@ -16,9 +16,9 @@ def getImage():
     viewMatrix = p.computeViewMatrix(
         position, targetPosition, cameraUpVector=[0, 0, 1])
     projectionMatrix = p.computeProjectionMatrixFOV(60, 1, 0.02, 5)
-    img = p.getCameraImage(512, 512, viewMatrix, projectionMatrix,
+    img = p.getCameraImage(56, 56, viewMatrix, projectionMatrix,
                            renderer=p.ER_BULLET_HARDWARE_OPENGL)
-    img = np.reshape(img[2], (512, 512, 4))
+    img = np.reshape(img[2], (56, 56, 4))
     return img.astype('uint8')
 
 
@@ -43,9 +43,12 @@ class robo_hand():
     elbow_index = 0
     wrist_index = 1
 
-    def __init__(self):
+    def __init__(self,handid,finger_joint_indices):
+        
+        self.handid=handid
+        self.finger_joint_indices = finger_joint_indices
         self.wave_arm(0)
-        for indices in finger_joint_indices:
+        for indices in self.finger_joint_indices:
             self.fingers.append(finger(*indices))
 
     def fold_finger(self, index, lower_angle, upper_angle):
@@ -53,12 +56,12 @@ class robo_hand():
     
     def wave_arm(self, angle):
         # p.resetJointState(
-        #     bodyUniqueId=handid,
+        #     bodyUniqueId=self.handid,
         #     jointIndex=self.elbow_index,
         #     targetValue=angle,
         # )
         p.setJointMotorControl2(
-            bodyIndex = handid,
+            bodyIndex = self.handid,
             jointIndex = self.elbow_index,
             controlMode = p.POSITION_CONTROL,
             targetPosition = angle,
@@ -68,7 +71,7 @@ class robo_hand():
 
     def move_wrist(self, angle):
         p.setJointMotorControl2(
-            bodyIndex = handid,
+            bodyIndex = self.handid,
             jointIndex = self.wrist_index,
             controlMode = p.POSITION_CONTROL,
             targetPosition = angle,
@@ -110,7 +113,7 @@ if __name__ == '__main__':
         (8, 9),  # ring
         (10, 11),  # little
     )
-    hand = robo_hand()
+    hand = robo_hand(handid,finger_joint_indices)
     while True:
         # wrist
         hand.move_wrist(0.4)
