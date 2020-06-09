@@ -48,7 +48,7 @@ class HandOfJustice(gym.Env):
             (8, 9),  # ring
             (10, 11),  # little
         )
-        self.hand = robo_hand(handid,finger_joint_indices)
+        self.hand = hc.robo_hand(handid,finger_joint_indices)
 
         
     def seed(self, seed=None):
@@ -70,6 +70,7 @@ class HandOfJustice(gym.Env):
         img = p.getCameraImage(56, 56, viewMatrix, projectionMatrix,
                            renderer=p.ER_BULLET_HARDWARE_OPENGL)
         img = np.reshape(img[2], (56, 56, 4))
+        ## make this of only 3 channels no need of the last one
         if flag:
             ## preprocess(img)
             pass
