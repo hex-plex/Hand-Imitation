@@ -16,7 +16,6 @@ finger index values
 2 - middle
 3 - ring
 4 - little
-
 angle limits => 0 to pi/2
 
 ### Wrist (1)
@@ -31,6 +30,20 @@ robo_hand.wave_arm( arm_angle )
 ```
 preferable angle limit => -pi/3 to pi/3
 
+### Array Input
+control all joints together with single function
+```python
+robo_hand.array_input(
+    (angle1, angle2), # Thumb angles
+    (angle1, angle2), # Index angles
+    (angle1, angle2), # Middle angles
+    (angle1, angle2), # Ring angles
+    (angle1, angle2), # Little angles
+    angle,            # Wrist angle
+    angle,            # Arm angle
+)
+```
+
 **Note:**
 Real time simulation in active *no need to call stepSimulation*.
 Give the Simulation few moments to move to desired orientation.
@@ -39,4 +52,4 @@ Give the Simulation few moments to move to desired orientation.
 ```python
 getImage()
 ```
-returns captured image in RGBA format Opencv compatible
+returns captured image in RGBA format (Opencv compatible)

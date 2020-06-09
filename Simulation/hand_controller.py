@@ -98,6 +98,13 @@ class robo_hand():
             force = 0.5,
             maxVelocity = 0.4
         )
+    
+    def array_input(arr):
+        assert len(arr)==12
+        for i in range(5):
+            self.fingers[i].rotate(*arr[i])
+        self.move_wrist(*arr[5])
+        self.wave_arm(*arr[6])
 
 
 if __name__ == '__main__':
