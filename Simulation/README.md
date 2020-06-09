@@ -11,11 +11,11 @@ there are total 12 Dof (12 angles in radians each)
 robo_hand.fold_finger( finger_index, palm_joint_angle, mid_finger_joint_angle )
 ```
 finger index values
-0 - thumb
-1 - index
-2 - middle
-3 - ring
-4 - little
+0 - thumb  
+1 - index  
+2 - middle  
+3 - ring  
+4 - little  
 angle limits => 0 to pi/2
 
 ### Wrist (1)
