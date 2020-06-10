@@ -56,9 +56,6 @@ class HandOfJustice(gym.Env):
         return [seed]
 
     def getImage(flag=True):
-        """
-        this function returns hand image in RGBA format
-        """
         ################################################
         ## Atul edit your pybullet preprocessing here ##
         ################################################
