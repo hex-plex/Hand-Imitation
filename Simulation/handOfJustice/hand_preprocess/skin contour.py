@@ -10,6 +10,7 @@ mask = cv2.inRange(image, lower, upper)
 output = cv2.bitwise_and(image, image, mask=mask)
 ret,thresh = cv2.threshold(mask, 40, 255, 0)
 contours,hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+#for contours with outer boundaries only
 hierarchy=hierarchy[0]
 if len(contours) != 0:
     for c in zip(contours, hierarchy):
