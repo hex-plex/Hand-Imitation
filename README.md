@@ -5,9 +5,9 @@ This a project for robocamp in which we try to make a robotic arm which would im
 - [X] feed and simulation of a robotic arm - Yash 
 - [X] Basic RL Environment building
 - [X] Reward function
-- [ ] Publish the Environment at openAI - Somnath
-- [ ] Report Start -Atul 
-- [ ] Model Training - Saaswath
+- [X] Publish the Environment at openAI - Somnath
+- [ ] Report Start -Yash 
+- [ ] Model Training - Saaswath And Atul
 - [ ] Improve The algos
 - [ ] Finish Report 
 Sayonara
