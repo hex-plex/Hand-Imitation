@@ -20,14 +20,14 @@ class HandOfJustice(gym.Env):
         else:
             p.connect(p.DIRECT)
 
-        
+
         self.action_space = spaces.Box(low=[0]*10+[-0.52,-1.04] ,high=[1.55]*10+[0.52,1.04])
         ## down and up (thumb, index, middle, ring, little) , wrist, elbow
         self.observation_space = spaces.Box(0,2.55,shape=(56,56,3))## remember to rescale
         ## Remember to change this
         p.setAdditionalSearchPath(os.path.abspath("Simulation"))
         self.handid = p.loadURDF("hand.urdf")
-        
+
         self.threshold=threshold ## Find a good one and set as default
         self.seed(int(time.time()))
         ## THis is to match up the no of pixels of our PHATTTT
@@ -50,11 +50,30 @@ class HandOfJustice(gym.Env):
         )
         self.hand = robo_hand(handid,finger_joint_indices)
 
-        
+
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
+    def handmask(frame):
+        frame=cv2.flip(frame,1)
+        kernel = np.ones((3,3),np.uint8)
+        #define region of interest
+        roi=frame[100:400, 100:300]
+        cv2.rectangle(frame,(100,100),(300,400),(0,255,0),0)
+        lab = cv2.cvtColor(roi, cv2.COLOR_BGR2LAB)
+        # define range of skin color in lab
+        lower_skin = np.array([40,120,120], dtype=np.uint8)
+        upper_skin = np.array([255,170,170], dtype=np.uint8)
+        #extract skin colour image
+        mask = cv2.inRange(lab, lower_skin, upper_skin)
+        #blur the image
+        cr_frame=frame[100:400,100:300]
+        cv2.imshow('mask',mask)
+        cv2.imshow('frame',frame)
+        cv2.imshow("cropped",cr_frame)
+        return mask
+        
     def getImage(flag=True):
         """
         this function returns hand image in RGBA format
@@ -76,7 +95,7 @@ class HandOfJustice(gym.Env):
         else:
             ## nopreprocess
             pass
-        
+
         return img.astype('uint8')
 
     def step(self,action):
@@ -100,22 +119,16 @@ class HandOfJustice(gym.Env):
         ## Or just call to reset to that point
         ## This can be skipped if a continues feel is to be got
 
-        
+
         self.target = self.cap.read()[1]
         cv2.waitKey(1)
-        ########################################################
-        ## Atul you have to preprocess the webcam camera here ##
-        ########################################################
-        
-        ## Take in a feed
-        ## observation is the target image
+        self.target = handmask(self.target)
         return self.target
-    
+
     def render(self,mode='human'):
         armCam=self.getImage(flag=True)
         ## a higher resolution can be used
         return armCam
-        
+
     def close(self):
         p.disconnect()
-    
