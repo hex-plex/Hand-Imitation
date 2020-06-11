@@ -19,7 +19,7 @@ hyperparam={
 def advantages(valueS,masks,rewardSA):
     returns=[]
     gae=0
-    for i in range(len(rewardSA)-1,-1,-1):
+    for i in range(len(rewardSA)-1,-1,-1):  
         delta = rewardSA[i] + hyperparam['gamma']*valueS[i+1]*masks[i] -valueS[i]
         gae = delta + hyperparam['gamma']*hyperparam['lambda']*masks[i]*gae
         returns.append(gae+valueS[i])
@@ -28,7 +28,7 @@ def advantages(valueS,masks,rewardSA):
     adv = np.array(returns) - valueS[:-1]
     return returns, ((adv -np.mean(adv))/(np.std(adv)+1e-10))
 
-def ppo_loss_p(old_policy_probs,advantages,rewards,valueS):
+def ppo_loss_actor(old_policy_probs,advantages,rewards,valueS):
     def loss(y_true,y_pred):
         y_true = tf.Print(y_true,[y_true],'y_true: ')
         y_pred = tf.Print(y_pred,[y_pred],'y_pred: ')
@@ -92,4 +92,7 @@ def model_actor_image(input_dims, output_dims):
     model.summary()
     return model
 
-        
+
+
+
+tensor_board = TensorBoard(log_dir='./logs')
