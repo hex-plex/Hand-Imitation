@@ -90,8 +90,11 @@ class HandOfJustice(gym.Env):
                            renderer=p.ER_BULLET_HARDWARE_OPENGL)
         img = np.reshape(img[2], (56, 56, 4))
         if flag:
-            ## preprocess(img)
-            pass
+            img=cv2.imread('handimg.png',0)
+            new_img=cv2.resize(img,(512,512))
+            _,thresh = cv2.threshold(new_img,127,255,cv2.THRESH_BINARY_INV)
+            cv2.imshow('thresholded_bot',thresh)
+            #pass
         else:
             ## nopreprocess
             pass
