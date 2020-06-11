@@ -21,3 +21,9 @@ Sayonara
 ## Chat
 This is our technical chat space if you have a problem link it here someone will take a look
 > Atul please start working on Report for now 
+> To train now you have to use the RL-Test.py This is after registering
+> I have enabled tensorboard to help you see the progress of the training
+> Use a VideoCapture(over a directory)
+> Dont take the risk of using the live feed as it might take a lot of time or even the hand might not be in the right position
+> We would actually train using RL-Train.py but due to some errors its not training well for now i have not updated it as that should not be used
+

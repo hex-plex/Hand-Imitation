@@ -1,87 +1,98 @@
-import numpy as np
-import time
-import matplotlib.pyplot as plt
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import gym
-from time import sleep
-from _thread ## Multithreaded is slower than single threaded
-class agentAI(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.fc1 = nn.Linear(15*30,12) ## THis has to altered for image size
-        ## Output has to be 12 with respect to joints
-        self.Fp = nn.Sequential(
-                    nn.Conv2d(3,10,5,stride=3),
-                    nn.BatchNorm2d(10)
-                    nn.ReLU(),
-                    nn.MaxPool2d(3,3),                    
-                    )
-    def forward(self,inputs):
-        x = self.Fp(inputs)
-        x = x.reshape(x.size(0),-1)
-        x = self.fc1(x)
-        return x
+import tensorflow as tf
+from keras.callbacks import TensorBoard
+from keras.layers import Input,Dense,Conv2D,MaxPooling2D,Flatter
+from keras.models import Model
+from keras.optimizers import Adam
+from keras import backend as K
+from keras.application.mobilenet_v2 as MobileNetv2
 
-def init_weights(m):
-    if ((type(m) == nn.Conv2d) or (type(m) == nn.Linear)):
-        torch.nn.init.xavier_uniform(m.weight)
-        m.bias.data.fill_(0.00)
+hyperparam={
+    'clip_val':0.2,
+    'critic_dis':0.5,
+    'entrophy_beta':0.001,
+    'gamma':0.99,
+    'lambda':0.65,
+    'actor_lr': 1e-4,
+    'critic_lr': 1e-3
+    }
 
-def create_agents(n): ##For evolutionary
-    agents = []
-    for i in range(n):
-        agent=agentAI()
+def advantages(valueS,masks,rewardSA):
+    returns=[]
+    gae=0
+    for i in range(len(rewardSA)-1,-1,-1):  
+        delta = rewardSA[i] + hyperparam['gamma']*valueS[i+1]*masks[i] -valueS[i]
+        gae = delta + hyperparam['gamma']*hyperparam['lambda']*masks[i]*gae
+        returns.append(gae+valueS[i])
+    returns=returns[::-1]  ## Check If THis WOrks
 
-        for param in agent.parameters():
-            param.requires_grad = False
-        init_weights(agent)
+    adv = np.array(returns) - valueS[:-1]
+    return returns, ((adv -np.mean(adv))/(np.std(adv)+1e-10))
 
-        agents.append(agent)
-    return agents
-def fit(agents,envi,human=False,sti=1):
-    return_agents[]
-    for agent in agents:  ## USe Thread to finish the process faster
-        agent.eval()
-        observation = envi.reset()
-        rew=0
-        while True:
-            observation = torch.tensor(observation)
-            inp = observation.type('torch.FloatTensor')
-            action = agent(inp).detach().numpy()[0] ## This is gonna be list of 12 no of  
-            for i in range(len(action)):
-                action[i]*=envi.action_space.high[i]
-            observation,reward,done,info = envi.step(action)
-            rew =rew+reward
-            if (done):
-                if human:
-                    time.sleep(1)
-                break
-        return_agents.append(rew)
-    return return_agents
+def ppo_loss_actor(old_policy_probs,advantages,rewards,valueS):
+    def loss(y_true,y_pred):
+        y_true = tf.Print(y_true,[y_true],'y_true: ')
+        y_pred = tf.Print(y_pred,[y_pred],'y_pred: ')
+        new_policy_probs = y_pred # Check Here also
+        new_policy_probs = tf.Print(new_policy_probs, [new_policy_probs],'new_policy_probs: ')
+        ratio = K.exp(K.log(new_policy_probs)- K.log(old_policy_probs) + 1e-10)
+        ratio = tf.Print(ratio,[ratio],'ratio: ')
+        p1 = ratio*advantages
+        p2 = K.clip(ratio,min_value= 1-clipping_val,max_value=1+clipping_val)*advantages
+        actor_loss = -K.mean(K.minimum(p1,p2))
+        actor_loss = tf.Print(actor_loss , [actor_loss] ,'actor_loss: ')
+        critic_loss = K.mean(K.square(rewards - valueS))
+        critic_loss = tf.Print(critic_loss , [critic_loss],'critic_loss: ')
+        term_al = hyperparam['critic_dis']*critic_loss
+        term_al = tf.Print(term_al, [term_al], 'term_al: ')
+        term_b2 = K.log(new_policy_probs + 1e-10)
+        term_b2 = tf.Print(term_b2, [term_b2], 'term_b2: ')
+        term_b = hyperparam['entrophy_beta']*K.mean(-(new_policy_probs*term_b2))
+        term_b = tf.Print(term_b, [term_b], 'term_b')
+        total_loss = term_a +actor_loss - term_b
+        total_loss = tf.Print(total_loss, [total_loss],'total_loss: ')
+        return total_loss
+    return loss
 
-def run_agents(agents):
-    envs = []
-    for i in range(noc):
-        envs.append(env)
-    env.reset()
+def ppo_loss_np(old_policy_probs,advantages,rewards,valueS):
+    def loss(y_true,y_pred):
+        new_policy_probs = y_pred # Check Here also
+        ratio = K.exp(K.log(new_policy_probs)- K.log(old_policy_probs) + 1e-10)
+        p1 = ratio*advantages
+        p2 = K.clip(ratio,min_value= 1-clipping_val,max_value=1+clipping_val)*advantages
+        actor_loss = -K.mean(K.minimum(p1,p2))
+        critic_loss = K.mean(K.square(rewards - valueS))
+        term_al = hyperparam['critic_dis']*critic_loss
+        term_b2 = K.log(new_policy_probs + 1e-10)
+        term_b = hyperparam['entrophy_beta']*K.mean(-(new_policy_probs*term_b2))
+        total_loss = term_a +actor_loss - term_b
+        return total_loss
+    return loss
 
-    agents = np.array(agents)
-    agents = agents.reshape(noc,-1)
-    result_id=[]
-    for i in range(noc):
-        # _thread.start_new_thread(lambda x : result_id.append(fit(agents[i],envs[i])),())
-        result_id.append(fit(agents[i],envs[i]))
+def model_actor_image(input_dims, output_dims):
+    state_input = Input(shape=input_dim)
+    old_policy_probs = Input(shape=(1,output_dims,))
+    advantages = Input(shape=(1,1,))
+    rewards = Input(shape=(1,1,))
+    valueS = Input(shape=(1,1,))
+    feature_image = MobileNetV2(include_top=False, weights='imagenet')
+    for layer in feature_image.layers:
+        layer.trainable = False
 
-    # while len(result_id)!=noc:pass
-    results = result_id
-    results = np.array(results,dtype=int)
-    return results.reshape(agents.shape[0]*agents.shape[1],-1)
+    x = Flatten(name = 'flatten')(feature_image(state_input))
+    x = Dense(1024,activation='relu' , name='fc1')(x)
+    out_actions = Dense(n_actions,activation='softmax',name='predictions')(x)
 
-def run_n(agents,n):
-    avg_metric = np.zeros(len(agents),1)
-    for i in range(n):
-       avg_matrix += run_agents(agents)
-    avg_metric/=n
-    return avg_metric.reshape(agents)
+    model = Model(inputs=[state_input, old_policy_probs, advantages,rewards, valueS],
+                  outputs=[out_actions])
+    model.compile(optimizer=Adam(lr=hyperparam['actor_lr']),loss=[ppo_loss_np(
+                                                                        old_policy_probs=old_policy_probs,
+                                                                        advantages=advantages,
+                                                                        rewards=rewards,
+                                                                        valueS=valueS)])
+    model.summary()
+    return model
+
+
+
+
+tensor_board = TensorBoard(log_dir='./logs')
