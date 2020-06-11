@@ -7,7 +7,6 @@ import pybullet_data
 import numpy as np
 import cv2
 import hand_controller as hc
-from hand_mask import handmask
 
 class HandOfJustice(gym.Env):
     metadata = {'render.modes':['human']}
@@ -57,9 +56,6 @@ class HandOfJustice(gym.Env):
         return [seed]
 
     def getImage(flag=True):
-        ################################################
-        ## Atul edit your pybullet preprocessing here ##
-        ################################################
         position = (0, -3, 2)
         targetPosition = (0, 0, 2)
         viewMatrix = p.computeViewMatrix(
@@ -70,29 +66,37 @@ class HandOfJustice(gym.Env):
         img = np.reshape(img[2], (56, 56, 4))
         ## make this of only 3 channels no need of the last one
         if flag:
-            img=cv2.imread('handimg.png',0)
-            new_img=cv2.resize(img,(512,512))
-            _,thresh = cv2.threshold(new_img,127,255,cv2.THRESH_BINARY_INV)
-            cv2.imshow('thresholded_bot',thresh)
-            #pass
+            img = img[:,:,:3]
         else:
-            ## nopreprocess
-            pass
+            img = img[:,:,:3]
+            img= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+            _,img = cv2.threshold(img,127,255,cv2.THRESH_BINARY_INV)
 
         return img.astype('uint8')
 
+    def handmask(frame):
+        frame=cv2.flip(frame,1)
+        kernel = np.ones((3,3),np.uint8)
+        cv2.rectangle(frame,(100,100),(300,400),(0,255,0),0)
+        lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
+        lower_skin = np.array([40,120,120], dtype=np.uint8)
+        upper_skin = np.array([255,170,170], dtype=np.uint8)
+        mask = cv2.inRange(lab, lower_skin, upper_skin)
+        #cv2.imshow('mask',mask)   ## This would also need a waitkey to work
+        #cv2.imshow('frame',frame)  ## THis would as crash ones computer as ram is not more that 16 gb in a normal computer
+        #cv2.imshow("cropped",cr_frame)
+        return mask
+    
     def step(self,action):
         armCam=self.getImage()
-        ## Preprocess the image
         self.hand.array_input(list(list([action[2*i],action[(2*i)+1]] for i in range(5))+[action[10],action[11]]))
-        error = np.sum(np.abs(armCam-self.target))
-        ## Try a thresholded or a mask rather than the whole thing
+        error = np.sum(np.abs(armCam-self.handmask(self.target)))
         if error<=self.threshold:
             done = True
         else:
             done = False
         return self.target, -error , done, {}
-        ## End point is anypoint with a error of a Threshold
+
     def reset(self):
         p.resetSimulation()
         p.configureDebugVisualiser(p.COV_ENABLE_RENDERING,0)
@@ -104,13 +108,10 @@ class HandOfJustice(gym.Env):
 
 
         self.target = self.cap.read()[1]
-        cv2.waitKey(1)
-        self.target = handmask(self.target)
         return self.target
 
     def render(self,mode='human'):
         armCam=self.getImage(flag=True)
-        ## a higher resolution can be used
         return armCam
 
     def close(self):
