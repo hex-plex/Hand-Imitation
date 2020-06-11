@@ -7,6 +7,7 @@ import pybullet_data
 import numpy as np
 import cv2
 import hand_controller as hc
+from hand_mask import handmask
 
 class HandOfJustice(gym.Env):
     metadata = {'render.modes':['human']}
