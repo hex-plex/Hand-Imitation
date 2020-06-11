@@ -1,7 +1,7 @@
 import gym
 import cv2
-from stable_baselines.sac import LnCnnPolicy,SAC
-
+from stable_baselines.sac import SAC
+from stable_baselines.sac.policies import LnCnnPolicy
 env = gym.make("handOfJustice-v0",cap=cv2.VideoCapture,mod="GUI",threshold=300)
                                             #arguements dont train in mod = "GUI"
                                             #all of these are defaulted
