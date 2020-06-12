@@ -91,6 +91,10 @@ class HandOfJusticeEnv(gym.Env):
             p.connect(p.GUI)
             p.resetDebugVisualizerCamera(cameraDistance=2, cameraYaw=0, cameraPitch=-40, cameraTargetPosition=[0,0,2])
             ## This is just to see the hand through opengl window so hence set this as  you see the hand as you want to see
+        elif mod=="human":
+            p.connect(p.GUI)
+            p.resetDebugVisualizerCamera(cameraDistance=2, cameraYaw=0, cameraPitch=-40, cameraTargetPosition=[0,0,2])
+            p.setRealTimeSimulation(1)
         else:
             p.connect(p.DIRECT)
 

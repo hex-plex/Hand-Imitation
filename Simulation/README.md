@@ -5,7 +5,7 @@ Here are all the files used in the simulation and learning process of the agent.
 This is a robotic arm which takes in a an input of 12 joint angles to Replicate a given pose.
 The environment has a few parameter to customize:
 - feed parameter where in an instance of cv2.VideoCapture is passed
-- mod parameter This is simply to run a env with pybullet in GUI or in Direct (which is for DIRECT of pybullet to be used)
+- mod parameter This is simply to run a env with pybullet in GUI or in Direct (which is for DIRECT of pybullet to be used),'human' to enable GUI with a setRealTimeSimulation(1)
 - epsilon parameter is for measuring how similar two images are, This helps in compensating  the excess length, width or thickness of one's hand with respect to the robotic arm.
 - preprocess parameter takes in a function that helps to threshold one's hand, this is one of the most important one as we are using traditional methods to process your hand for a reward function,And it might not suite all lighting conditions or hand types (Even with our trys to make it as robust as possible ).
 for passing a function as preprocess which should threshold your hand and return a mask of your hand
@@ -36,4 +36,4 @@ For Training we run RL-train.py
 # Updates Required
 - [ ] Setup a auto cropping mechanism for a image based on cascading algorithms
 - [ ] Use a PID controller to go from a current pose to another as its what would be used in real world
-- [ ]  u
+- [ ] Make a Check for existance of an hand with help of preprocess
