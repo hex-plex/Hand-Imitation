@@ -3,7 +3,7 @@ import gym_handOfJustice
 import cv2
 from stable_baselines.sac import SAC
 from stable_baselines.sac.policies import LnCnnPolicy
-env = gym.make("handOfJustice-v0",cap=cv2.VideoCapture(<--directory-->),threshold=150)
+env = gym.make("handOfJustice-v0",cap=cv2.VideoCapture(<--directory-->),epsilon=150)
 
 model = SAC(LnCnnPolicy, env , verbose=1,tensorboard_log="./logs")
 model.learn(total_timesteps=50000,log_interval=10)
