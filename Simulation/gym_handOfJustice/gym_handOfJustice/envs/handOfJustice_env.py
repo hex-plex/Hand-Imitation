@@ -85,7 +85,7 @@ class robo_hand():
 class HandOfJusticeEnv(gym.Env):
     metadata = {'render.modes':['human']}
 
-    def __init__(self,cap=cv2.VideoCapture(0),mod="Direct",threshold=150):
+    def __init__(self,cap=cv2.VideoCapture(0),mod="Direct",epsilon=150,preprocess=None,resolution=(56,56,3)):
         self.cap =  cap
         if mod == "GUI":
             p.connect(p.GUI)
@@ -97,12 +97,20 @@ class HandOfJusticeEnv(gym.Env):
 
         self.action_space = spaces.Box(low=np.array([0]*10+[-0.52,-1.04]) ,high=np.array([1.55]*10+[0.52,1.04]))
         ## down and up (thumb, index, middle, ring, little) , wrist, elbow
-        self.observation_space = spaces.Box(0,2.55,shape=(56,56,3))## remember to rescale
+
+        if len(resolution)!=3:
+            raise Exception("Only a ndim n=3 image can be given as a input")
+
+        self.res=resolution
+        self.observation_space = spaces.Box(0,2.55,shape=tuple(self.res))## remember to rescale
         ## Remember to change this
         p.setAdditionalSearchPath(os.path.abspath("Simulation"))
         self.handid = p.loadURDF(currentdir+"/hand.urdf")
-
-        self.threshold=threshold ## Find a good one and set as default
+        if preprocess is None:
+            self.hand_thresh=self.handmask
+        else:
+            self.hand_thresh=preprocess
+        self.epsilon=epsilon ## Find a good one and set as default
         self.seed(int(time.time()))
         ## THis is to match up the no of pixels of our PHATTTT
         p.createConstraint(
@@ -151,7 +159,7 @@ class HandOfJusticeEnv(gym.Env):
     def handmask(self,frame):
         frame=cv2.flip(frame,1)
         kernel = np.ones((3,3),np.uint8)
-        cv2.rectangle(frame,(100,100),(300,400),(0,255,0),0)
+        #cv2.rectangle(frame,(100,100),(300,400),(0,255,0),0)
         lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
         lower_skin = np.array([40,120,120], dtype=np.uint8)
         upper_skin = np.array([255,170,170], dtype=np.uint8)
@@ -165,8 +173,8 @@ class HandOfJusticeEnv(gym.Env):
         armCam=self.getImage()
         print(tuple(list((action[2*i],action[(2*i)+1]) for i in range(5))+[action[10],action[11]])) 
         self.hand.array_input(tuple(list((action[2*i],action[(2*i)+1]) for i in range(5))+[action[10],action[11]]))
-        error = np.sum(np.abs(armCam-self.handmask(self.target)))
-        if error<=self.threshold:
+        error = np.sum(np.abs(armCam-self.hand_thresh(self.target)))
+        if error<=self.epsilon:
             done = True
         else:
             done = False
@@ -183,6 +191,11 @@ class HandOfJusticeEnv(gym.Env):
 
 
         self.target = self.cap.read()[1]
+        try:
+            self.target = cv2.resize(self.target,(self.res[0],self.res[1]))
+        except:
+            raise Exception("the aspect tatio of the resolution and the given image doesnt match up")
+
         return self.target
 
     def render(self,mode='human'):
