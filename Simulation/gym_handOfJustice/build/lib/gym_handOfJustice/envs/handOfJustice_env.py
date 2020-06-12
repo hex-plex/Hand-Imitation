@@ -102,7 +102,7 @@ class HandOfJusticeEnv(gym.Env):
             self.clientId = p.connect(p.DIRECT)
 
         
-        #p.setRealTimeSimulation(1,physicsClientId=self.clientId)
+        p.setRealTimeSimulation(1,physicsClientId=self.clientId)
         p.resetDebugVisualizerCamera(cameraDistance=2, cameraYaw=0, cameraPitch=-40, cameraTargetPosition=[0,0,2],physicsClientId=self.clientId)
             
         self.action_space = spaces.Box(low=np.array([0]*10+[-0.52,-1.04]) ,high=np.array([1.55]*10+[0.52,1.04]))
@@ -112,8 +112,7 @@ class HandOfJusticeEnv(gym.Env):
             raise Exception("Only a ndim n=3 image can be given as a input")
 
         self.res=resolution
-        self.observation_space = spaces.Box(0,2.55,shape=tuple(self.res))## remember to rescale
-        ## Remember to change this
+        self.observation_space = spaces.Box(0,2.55,shape=tuple(self.res))
         
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         self.plane = p.loadURDF( "plane.urdf" , physicsClientId=self.clientId)
@@ -166,7 +165,7 @@ class HandOfJusticeEnv(gym.Env):
                            renderer=p.ER_BULLET_HARDWARE_OPENGL,
                                physicsClientId=self.clientId)
         img = np.reshape(img[2], (56, 56, 4))
-        ## make this of only 3 channels no need of the last one
+        
         if flag:
             img = img[:,:,:3]
         else:
