@@ -10,14 +10,15 @@ This a project for robocamp in which we try to make a robotic arm which would im
 - [ ] Model Training - Saaswath And Atul
 - [ ] Improve The algos
 - [ ] Finish Report 
-Sayonara
+
+###Sayonara
 
 
 ## Attendance
 1. Somnath ([hex-plex](https://github.com/hex-plex))
 2. Yash ([numberbee7070](https://github.com/numberbee7070))
 3. Saaswath([infini8-13](https://github.com/infini8-13))
->put in your names so as to confirm your presence
+4. Atul ([AtuL_KumaR-00](https://github.com/AtuL_KumaR-00))
 ## Chat
 This is our technical chat space if you have a problem link it here someone will take a look
 > Atul please start working on Report for now 
