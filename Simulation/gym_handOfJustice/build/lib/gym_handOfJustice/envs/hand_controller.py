@@ -79,12 +79,11 @@ class robo_hand():
             maxVelocity = 0.4
         )
     
-    def array_input(arr):
-        assert len(arr)==12
+    def array_input(self,arr):
         for i in range(5):
             self.fingers[i].rotate(*arr[i])
-        self.move_wrist(*arr[5])
-        self.wave_arm(*arr[6])
+        self.move_wrist(arr[5])
+        self.wave_arm(arr[6])
 
 
 if __name__ == '__main__':
@@ -116,6 +115,10 @@ if __name__ == '__main__':
     hand = robo_hand(handid,finger_joint_indices)
     while True:
         # wrist
+        hand.array_input(((1,1),(1,1),(1,1),(1,1),(1,1),1,1))
+        time.sleep(1)
+        hand.array_input(((1,1),(1,1),(1,1),(1,1),(1,1),1,1))
+        time.sleep(1)
         hand.move_wrist(0.4)
         time.sleep(1)
         # thumb
