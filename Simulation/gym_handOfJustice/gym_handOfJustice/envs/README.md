@@ -1,4 +1,4 @@
-# Guide for using simulation
+# Hand_Controller
 
 robo_hand class can control the arm in any way
 ```python
@@ -44,9 +44,7 @@ robo_hand.array_input(
 )
 ```
 
-**Note:**
-Real time simulation in active *no need to call stepSimulation*.
-Give the Simulation few moments to move to desired orientation.
+
 
 ## Get Hand Image
 ```python
