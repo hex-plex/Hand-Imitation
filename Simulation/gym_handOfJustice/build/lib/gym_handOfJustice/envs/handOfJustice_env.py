@@ -32,6 +32,7 @@ class finger():
                                     targetPositions=(lower_angle, upper_angle),
                                     forces=[500, 500],
                                     physicsClientId=self.clientId)
+        p.stepSimulation(physicsClientId=self.clientId)
 
 
 class robo_hand():
@@ -66,6 +67,7 @@ class robo_hand():
             maxVelocity = 0.4,
             physicsClientId=self.clientId
         )
+        p.stepSimulation(physicsClientId=self.clientId)
 
     def move_wrist(self, angle):
         p.setJointMotorControl2(
@@ -77,12 +79,13 @@ class robo_hand():
             maxVelocity = 0.4,
             physicsClientId=self.clientId
         )
-    
+        p.stepSimulation(physicsClientId=self.clientId)
     def array_input(self,arr):
         for i in range(5):
             self.fingers[i].rotate(*arr[i])
         self.move_wrist(arr[5])
         self.wave_arm(arr[6])
+        #p.stepSimulation(physicsClientId=self.clientId)
 
 
 
@@ -93,14 +96,15 @@ class HandOfJusticeEnv(gym.Env):
     def __init__(self,cap=cv2.VideoCapture(0),mod="Direct",epsilon=150,preprocess=None,resolution=(56,56,3)):
         self.cap =  cap
         if mod == "GUI":
-            self.clientId=p.connect(p.GUI)
-            p.resetDebugVisualizerCamera(cameraDistance=2, cameraYaw=0, cameraPitch=-40, cameraTargetPosition=[0,0,2],physicsClientId=self.clientId)
+            self.clientId = p.connect(p.GUI)
             ## This is just to see the hand through opengl window so hence set this as  you see the hand as you want to see
-            p.setRealTimeSimulation(1,physicsClientId=self.clientId)
         else:
-            self.clientId=p.connect(p.DIRECT)
+            self.clientId = p.connect(p.DIRECT)
 
-
+        
+        #p.setRealTimeSimulation(1,physicsClientId=self.clientId)
+        p.resetDebugVisualizerCamera(cameraDistance=2, cameraYaw=0, cameraPitch=-40, cameraTargetPosition=[0,0,2],physicsClientId=self.clientId)
+            
         self.action_space = spaces.Box(low=np.array([0]*10+[-0.52,-1.04]) ,high=np.array([1.55]*10+[0.52,1.04]))
         ## down and up (thumb, index, middle, ring, little) , wrist, elbow
 
@@ -186,22 +190,22 @@ class HandOfJusticeEnv(gym.Env):
         return mask
     
     def step(self,action):
-        p.stepSimulation(physicsClientId=self.clientId)
-        armCam=self.getImage()
-        print(armCam.shape)
+        #print(armCam.shape)
         #print(tuple(list((action[2*i],action[(2*i)+1]) for i in range(5))+[action[10],action[11]])) 
         self.hand.array_input(tuple(list((action[2*i],action[(2*i)+1]) for i in range(5))+[action[10],action[11]]))
+        p.stepSimulation(physicsClientId=self.clientId)
+        armCam=self.getImage()
         error = np.sum(np.abs(armCam-self.hand_thresh(self.target)))
         if error<=self.epsilon:
             done = True
         else:
             done = False
-        return self.target, -error , done, {}
+        return self.target, -1*error , done, {}
 
     def reset(self):
         p.restoreState(self.resetState)
         p.configureDebugVisualizer(p.COV_ENABLE_RENDERING,0,physicsClientId=self.clientId)
-        #p.setGravity(0,0,-10)
+        p.setGravity(0,0,-10)
         
         ## Initilize the hand same like the one done in __init__
         ## Or just call to reset to that point
@@ -218,8 +222,6 @@ class HandOfJusticeEnv(gym.Env):
 
     def render(self,mode='human'):
         armCam=self.getImage(flag=True)
-        cv2.imshow("The outPut", armCam)
-        cv2.waitKey(1)
         return armCam
 
     def close(self):
