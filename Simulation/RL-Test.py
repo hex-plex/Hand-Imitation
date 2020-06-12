@@ -1,4 +1,5 @@
 import gym
+import gym_handOfJustice
 import cv2
 from stable_baselines.sac import SAC
 from stable_baselines.sac.policies import LnCnnPolicy
