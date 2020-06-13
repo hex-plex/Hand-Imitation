@@ -1,17 +1,6 @@
 # Hand-Imitation
 RL-based learning for a robotic arm to imitate a given hand in a image feed
 with handOfJustice as our environment
-## The TODO
-- [X] feed and simulation of a robotic arm - Yash 
-- [X] Basic RL Environment building
-- [X] Reward function
-- [X] Publish the Environment at openAI - Somnath
-- [X] Report Start -Yash 
-- [X] Model Training - Saaswath And Atul
-- [X] Improve The algos
-- [X] Finish Report 
-
-### Sayonara
 
 
 ## Attendance
@@ -40,10 +29,18 @@ examples are RL-train.py and RL-Test.py
 
 ## Output
 These are the best result after training over a limited amount of time
+
+**Note** 
+we have used clips from different versions of trained model and environment so there is a edit on these clips that in the gym-handOfJustice==0.0.6 a flip in the environment was added to make feel of the robotic hand more mirror like which can be spotted in the gif files
+
 ![Output-1](/normal&four_diff.gif?raw=true)
 ![Output-2](/3Pose.gif?raw=true)
 
 ## The End
 Thats all from our side
+
+[Our report](https://docs.google.com/document/d/1_qCllQiJLehKjnqM8FxTcfWmQpp4JSpf9QeZYaxmxv0/edit?usp=sharing)
+
+
 ![Thank-You](/Thank_You.gif?raw=true)
 
