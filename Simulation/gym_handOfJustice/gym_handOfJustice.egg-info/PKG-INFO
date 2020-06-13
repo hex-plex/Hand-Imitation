@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: gym-handOfJustice
-Version: 0.0.3
+Version: 0.0.7
 Summary: A openAI Gym Env for a Robotic arm that imitates an arm which would be given through a feed
 Home-page: UNKNOWN
 Author: UNKNOWN
