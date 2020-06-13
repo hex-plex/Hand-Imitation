@@ -194,7 +194,10 @@ class HandOfJusticeEnv(gym.Env):
         self.hand.array_input(tuple(list((action[2*i],action[(2*i)+1]) for i in range(5))+[action[10],action[11]]))
         p.stepSimulation(physicsClientId=self.clientId)
         armCam=self.getImage()
-        error = np.sum(np.abs(armCam-self.hand_thresh(self.target)))
+        robo = armCam>100
+        handthr = self.hand_thresh(self.target) > 100
+        u = robo^handthr
+        error = np.sum(u)
         if error<=self.epsilon:
             done = True
         else:
