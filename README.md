@@ -1,6 +1,8 @@
 # Hand-Imitation
+
 RL-based learning for a robotic arm to imitate a given hand in a image feed
 with handOfJustice as our environment
+
 ## The TODO
 - [X] feed and simulation of a robotic arm - Yash 
 - [X] Basic RL Environment building
@@ -10,6 +12,7 @@ with handOfJustice as our environment
 - [X] Model Training - Saaswath And Atul
 - [-] Improve The algos
 - [-] Finish Report 
+
 
 ### Sayonara
 
