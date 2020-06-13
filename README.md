@@ -28,5 +28,5 @@ pip install gym-handOfJustice
 
 we used Actor Critic technique to update the a CNN
 examples are RL-train.py and RL-Test.py 
--in RL-train we have built the Actor and the critic model using tensorflow
--in RL-Test we have used stable-baselines SAC model with LnCnnpolicy policy
+- In RL-train we have built the Actor and the critic model using tensorflow
+- In RL-Test we have used stable-baselines SAC model with LnCnnpolicy policy
