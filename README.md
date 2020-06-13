@@ -1,5 +1,5 @@
 # Hand-Imitation
-This a project for robocamp in which we try to make a robotic arm which would imitate a hand for which feed is given through a webcam
+Simulation of a Robotic Arm imitating a human arm cast directly from Webcam
 
 ## The TODO
 - [X] feed and simulation of a robotic arm - Yash 
