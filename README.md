@@ -10,8 +10,8 @@ with handOfJustice as our environment
 - [X] Publish the Environment at openAI - Somnath
 - [X] Report Start -Yash 
 - [X] Model Training - Saaswath And Atul
-- [-] Improve The algos
-- [-] Finish Report 
+- [X] Improve The algos
+- [ ] Finish Report 
 
 
 ### Sayonara
