@@ -9,7 +9,7 @@ with handOfJustice as our environment
 - [X] Report Start -Yash 
 - [X] Model Training - Saaswath And Atul
 - [X] Improve The algos
-- [ ] Finish Report 
+- [X] Finish Report 
 
 ### Sayonara
 
