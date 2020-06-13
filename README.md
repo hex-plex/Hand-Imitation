@@ -24,6 +24,12 @@ with handOfJustice as our environment
 ``` console
 pip install gym-handOfJustice
 ```
+else
+``` console
+git clone https://github.com/hex-plex/gym-handOfJustice
+cd gym-handOfJustice
+pip install -e .
+```
 ## To Train
 
 we used Actor Critic technique to update the a CNN
