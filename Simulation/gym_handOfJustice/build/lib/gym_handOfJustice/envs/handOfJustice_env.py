@@ -112,7 +112,7 @@ class HandOfJusticeEnv(gym.Env):
             raise Exception("Only a ndim n=3 image can be given as a input")
 
         self.res=resolution
-        self.observation_space = spaces.Box(0,2.55,shape=tuple(self.res))
+        self.observation_space = spaces.Box(0,2.55,shape=(self.res[0],self.res[1]*2,self.res[2]))
         
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         self.plane = p.loadURDF( "plane.urdf" , physicsClientId=self.clientId)
@@ -161,10 +161,10 @@ class HandOfJusticeEnv(gym.Env):
             position, targetPosition, cameraUpVector=[0, 0, 1],
             physicsClientId=self.clientId)
         projectionMatrix = p.computeProjectionMatrixFOV(60, 1, 0.02, 5,physicsClientId=self.clientId)
-        img = p.getCameraImage(56, 56, viewMatrix, projectionMatrix,
+        img = p.getCameraImage(self.res[0], self.res[1], viewMatrix, projectionMatrix,
                            renderer=p.ER_BULLET_HARDWARE_OPENGL,
                                physicsClientId=self.clientId)
-        img = np.reshape(img[2], (56, 56, 4))
+        img = np.reshape(img[2], (self.res[0],self.res[1], 4))
         
         if flag:
             img = img[:,:,:3]
@@ -199,13 +199,18 @@ class HandOfJusticeEnv(gym.Env):
             done = True
         else:
             done = False
-        return self.target, -1*error , done, {}
+
+        if self.noofrun>300:
+            error=100000000000
+        self.noofrun+=1
+        armCam=self.getImage(flag=True)
+        return np.append(self.target,armCam,axis=1), -1*error , done, {}
 
     def reset(self):
         p.restoreState(self.resetState)
         p.configureDebugVisualizer(p.COV_ENABLE_RENDERING,0,physicsClientId=self.clientId)
         p.setGravity(0,0,-10)
-        
+        self.noofrun=0
         ## Initilize the hand same like the one done in __init__
         ## Or just call to reset to that point
         ## This can be skipped if a continues feel is to be got
@@ -217,7 +222,7 @@ class HandOfJusticeEnv(gym.Env):
         except:
             raise Exception("the aspect tatio of the resolution and the given image doesnt match up")
 
-        return self.target
+        return np.append(self.target,self.getImage(flag=True),axis=1)
 
     def render(self,mode='human'):
         armCam=self.getImage(flag=True)
