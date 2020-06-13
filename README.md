@@ -1,8 +1,6 @@
 # Hand-Imitation
-
 RL-based learning for a robotic arm to imitate a given hand in a image feed
 with handOfJustice as our environment
-
 ## The TODO
 - [X] feed and simulation of a robotic arm - Yash 
 - [X] Basic RL Environment building
@@ -12,7 +10,6 @@ with handOfJustice as our environment
 - [X] Model Training - Saaswath And Atul
 - [X] Improve The algos
 - [ ] Finish Report 
-
 
 ### Sayonara
 
@@ -31,5 +28,5 @@ pip install gym-handOfJustice
 
 we used Actor Critic technique to update the a CNN
 examples are RL-train.py and RL-Test.py 
-in RL-train we have built the Actor and the critic model using tensorflow
-in RL-Test we have used stable-baselines SAC model with LnCnnpolicy policy
+-in RL-train we have built the Actor and the critic model using tensorflow
+-in RL-Test we have used stable-baselines SAC model with LnCnnpolicy policy
