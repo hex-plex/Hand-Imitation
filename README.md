@@ -24,12 +24,19 @@ with handOfJustice as our environment
 ``` console
 pip install gym-handOfJustice
 ```
+else
+``` console
+git clone https://github.com/hex-plex/gym-handOfJustice
+cd gym-handOfJustice
+pip install -e .
+```
 ## To Train
 
 we used Actor Critic technique to update the a CNN
 examples are RL-train.py and RL-Test.py 
 - In RL-train we have built the Actor and the critic model using tensorflow
 - In RL-Test we have used stable-baselines SAC model with LnCnnpolicy policy
+
 
 ## Output
 These are the best result after training over a limited amount of time
@@ -39,3 +46,4 @@ These are the best result after training over a limited amount of time
 ## The End
 Thats all from our side
 ![Thank-You](/Thank_You.gif?raw=true)
+
