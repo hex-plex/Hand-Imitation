@@ -1,6 +1,6 @@
 # Hand-Imitation
 RL-based learning for a robotic arm to imitate a given hand in a image feed
-with handOfJustice as our environment
+with [handOfJustice](https://github.com/hex-plex/gym-handOfJustice) as our environment
 
 
 ## Attendance
