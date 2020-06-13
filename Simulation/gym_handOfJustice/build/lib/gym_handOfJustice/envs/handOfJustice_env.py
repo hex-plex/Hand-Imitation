@@ -177,16 +177,12 @@ class HandOfJusticeEnv(gym.Env):
 
     def handmask(self,frame):
         frame=cv2.flip(frame,1)
-        kernel = np.ones((2,2),np.uint8)
+        kernel = np.ones((3,3),np.uint8)
         #cv2.rectangle(frame,(100,100),(300,400),(0,255,0),0)
         lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
         lower_skin = np.array([40,120,120], dtype=np.uint8)
         upper_skin = np.array([255,170,170], dtype=np.uint8)
         mask = cv2.inRange(lab, lower_skin, upper_skin)
-        #dilate to reduce black spots within arm
-        mask = cv2.dilate(mask,kernel,iterations = 4)
-        #blur the image
-        mask = cv2.GaussianBlur(mask,(3,3),100)
         #cv2.imshow('mask',mask)   ## This would also need a waitkey to work
         #cv2.imshow('frame',frame)  ## THis would as crash ones computer as ram is not more that 16 gb in a normal computer
         #cv2.imshow("cropped",cr_frame)
@@ -198,7 +194,10 @@ class HandOfJusticeEnv(gym.Env):
         self.hand.array_input(tuple(list((action[2*i],action[(2*i)+1]) for i in range(5))+[action[10],action[11]]))
         p.stepSimulation(physicsClientId=self.clientId)
         armCam=self.getImage()
-        error = np.sum(np.abs(armCam-self.hand_thresh(self.target)))
+        robo = armCam>100
+        handthr = self.hand_thresh(self.target) > 100
+        u = robo^handthr
+        error = np.sum(u)
         if error<=self.epsilon:
             done = True
         else:
