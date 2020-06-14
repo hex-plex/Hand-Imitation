@@ -4,10 +4,25 @@ with [handOfJustice](https://github.com/hex-plex/gym-handOfJustice) as our envir
 
 
 ## Attendance
-1. Somnath ([hex-plex](https://github.com/hex-plex))
-2. Yash ([numberbee7070](https://github.com/numberbee7070))
-3. Saaswath([infini8-13](https://github.com/infini8-13))
-4. Atul ([AtuL-KumaR-00](https://github.com/AtuL-KumaR-00))
+<table>
+ <td align="center">
+     <a href="https://github.com/hex-plex">
+    <img src="https://avatars0.githubusercontent.com/u/56990337?s=460&v=4" width="100px;" alt=""/><br /><sub><b>Somnath Sendhil Kumar </b></sub></a><br />
+    </td>
+    <td align="center">
+     <a href="https://github.com/numberbee7070">
+    <img src="https://avatars3.githubusercontent.com/u/63304283?s=460&v=4" width="100px;" alt=""/><br /><sub><b>Yash Garg</b></sub></a><br />
+	</td>
+	<td align="center">
+     <a href="https://github.com/infini8-13">
+    <img src="https://avatars2.githubusercontent.com/u/54203063?s=460&v=4" width="100px;" alt=""/><br /><sub><b>L N Saaswath</b></sub></a><br />
+	</td>
+	<td align="center">
+     <a href="https://github.com/AtuL-KumaR-00">
+    <img src="https://avatars3.githubusercontent.com/u/64649440?s=460&v=4" width="100px;" alt=""/><br /><sub><b>Atul Kumar</b></sub></a><br />
+	</td>
+    
+</table>
 
 ## To Setup 
 ``` console
