@@ -2,4 +2,6 @@ Pipfile
 Pipfile.lock
 cartpole.py
 hand.py
-handt.jpg	
+handt.jpg
+hogr/
+Simulation/dataset/	
