@@ -3,23 +3,32 @@ import gym_handOfJustice
 import cv2
 from stable_baselines.sac import SAC
 from stable_baselines.sac.policies import LnCnnPolicy
-strea = cv2.VideoCapture("C:/Users/somna/Desktop/handOfJustice/Simulation/dataset/%06d.png")
+import os
+strea = cv2.VideoCapture(os.getcwd()+"\\dataset\\%06d.png")
 if not strea.isOpened():
     raise Exception("Problem exporting the video stream")
-env = gym.make("handOfJustice-v0",cap=strea,epsilon=150)
+env = gym.make("handOfJustice-v0",cap=strea,epsilon=850)
 
-model = SAC(LnCnnPolicy, env , verbose=1,tensorboard_log="./logs")
-model.learn(total_timesteps=50000,log_interval=10)
-model.save("handicap_justice")
+model = SAC(LnCnnPolicy, env , verbose=1,tensorboard_log=os.getcwd()+"\\logs\\")
+#model.learn(total_timesteps=45000,log_interval=10)
+#model.save("handicap_justice")
+model.load("handicap_justice")
 
 import time;time.sleep(3)
-
+print("\n"+("="*20)+"\nTraining complete\n"+("="*20)+"\n\n")
 ## No is the first image gonna be taken
 obs = env.reset()
+done = False
+i=0
 while True:
+    if done:
+        i+=1
+        if i>=49975:
+            break
+        obs = env.reset()
     action,states = model.predict(obs)
-    obs, rewards,dones,info = env.step(action)
+    obs, rewards,done,info = env.step(action)
     ## Dont keep it on while training but i dont think that will be the case
-    cv2.imshow("This is what the robotic arm is doing",env.render())
+    cv2.imshow("This is what the robotic arm is doing",obs)
     cv2.waitKey(1)
     time.sleep(0.05)

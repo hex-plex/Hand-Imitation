@@ -5,6 +5,7 @@ from keras.models import Model
 from keras.optimizers import Adam
 from keras import backend as K
 from keras.application.mobilenet_v2 as MobileNetv2
+import os
 import gym
 import pybullet
 import cv2
@@ -95,7 +96,7 @@ def model_critic_image(input_dims):
     return model
 
 
-tensor_board = TensorBoard(log_dir='./logs')
+tensor_board = TensorBoard(log_dir=os.getcwd()+'/logs')
 
 env = gym.make('handOfJustice-v0',cap=cv2.VideoCapture(<--directory-->))
 
