@@ -7,19 +7,19 @@ import os
 strea = cv2.VideoCapture(os.getcwd()+"\\dataset\\%06d.png")
 if not strea.isOpened():
     raise Exception("Problem exporting the video stream")
-env = gym.make("handOfJustice-v0",cap=strea,epsilon=850)
+env = gym.make("handOfJustice-v0",cap=strea,epsilon=200)
 
-model = SAC(LnCnnPolicy, env , verbose=1,tensorboard_log=os.getcwd()+"\\logs\\")
-#model.learn(total_timesteps=45000,log_interval=10)
-#model.save("handicap_justice")
-model.load("handicap_justice")
+model = SAC(LnCnnPolicy, env , verbose=1,tensorboard_log=os.getcwd()+"\\logs\\",full_tensorboard_log=True)
+model.learn(total_timesteps=45000,log_interval=10)
+model.save("handicap_justice")
+#model.load("handicap_justice")
 
 import time;time.sleep(3)
 print("\n"+("="*20)+"\nTraining complete\n"+("="*20)+"\n\n")
 ## No is the first image gonna be taken
 obs = env.reset()
 done = False
-i=0
+i=45000
 while True:
     if done:
         i+=1
