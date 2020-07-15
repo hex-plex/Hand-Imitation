@@ -121,6 +121,7 @@ for episode in range(num_episodes):
     done=False
     while not done:
         action = actor_model.predict([state,dummy_1],steps=1)
+        print(action)
         next_state,reward,done,_=env.step(np.squeeze(action))
         next_state = next_state.reshape((1,) + next_state.shape )
         step+=1
