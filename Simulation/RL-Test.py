@@ -8,10 +8,11 @@ import os
 strea = cv2.VideoCapture(os.getcwd()+"\\dataset\\%06d.png")
 if not strea.isOpened():
     raise Exception("Problem exporting the video stream")
-env = gym.make("handOfJustice-v0",cap=strea,epsilon=200)
-tf.test.is_gpu_available()
+env = gym.make("handOfJustice-v0",cap=strea,epsilon=300)
+#tf.test.is_gpu_available()
 model = SAC(LnCnnPolicy, env , verbose=1,tensorboard_log=os.getcwd()+"\\logs\\",full_tensorboard_log=True)
-model.learn(total_timesteps=200000,log_interval=10)
+model.load("handicap_justice")
+model.learn(total_timesteps=100000,log_interval=10)
 model.save("handicap_justice")
 #model.load("handicap_justice")
 
@@ -21,7 +22,8 @@ print("\n"+("="*20)+"\nTraining complete\n"+("="*20)+"\n\n")
 obs = env.reset()
 done = False
 i=45000
-while True:
+try:
+ while True:
     if done:
         i+=1
         if i>=49975:
@@ -33,3 +35,5 @@ while True:
     cv2.imshow("This is what the robotic arm is doing",obs)
     cv2.waitKey(1)
     time.sleep(0.05)
+except:
+ cv2.destroyAllWindows()

@@ -72,7 +72,7 @@ def model_actor_image(input_dims, output_dims):
     sigma = Dense(len(output_dims))(x)
     sigma = tf.keras.activations.softplus(sigma)+1e-5
     norm_dist = tf.contrib.distributions.Normal(mu,sigma)
-    action_tf_var = tf.squeeze(norm_dist.sample(1),axis=0)
+    action_tf_var = tf.squeeze(norm_dist.sample(lens(output_dims)),axis=0)
     
 
     model = Model(inputs=[state_input, delta],
@@ -120,8 +120,10 @@ for episode in range(num_episodes):
     step = 0
     done=False
     while not done:
-        action = actor_model.predict([state,dummy_1],steps=1)
+        action = np.squeeze(actor_model.predict([state,dummy_1],steps=1))
         print(action)
+        for i in range(len(action)):
+            action[i] = max(min(action[i],env.observation_space.high[i]),env.observation_space.low[i])
         next_state,reward,done,_=env.step(np.squeeze(action))
         next_state = next_state.reshape((1,) + next_state.shape )
         step+=1
