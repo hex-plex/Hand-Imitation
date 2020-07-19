@@ -60,7 +60,7 @@ def ppo_loss_np(old_policy_probs,advantages,rewards,valueS):
 
 def model_actor_image(input_dims, output_dims):
     state_input = Input(shape=input_dims)
-    delta = Input(shape=(1,1,))
+    delta = Input(shape=())
     feature_image = MobileNetV2(include_top=False, weights='imagenet')
     for layer in feature_image.layers:
         layer.trainable = False
@@ -68,11 +68,11 @@ def model_actor_image(input_dims, output_dims):
     x = Flatten(name = 'flatten')(feature_image(state_input))
     x = Dense(512,activation='relu' , name='fc1')(x)
     x = Dense(128,activation='relu' , name='fc2')(x)
-    mu = Dense(len(output_dims))(x)
-    sigma = Dense(len(output_dims))(x)
+    mu = Dense(output_dims[0])(x)
+    sigma = Dense(output_dims[0])(x)
     sigma = tf.keras.activations.softplus(sigma)+1e-5
     norm_dist = tf.contrib.distributions.Normal(mu,sigma)
-    action_tf_var = tf.squeeze(norm_dist.sample(lens(output_dims)),axis=0)
+    action_tf_var = tf.squeeze(norm_dist.sample(1),axis=0)
     
 
     model = Model(inputs=[state_input, delta],
@@ -108,7 +108,7 @@ action_dims = env.action_space.shape
 actor_model = model_actor_image(input_dims=state_dims,output_dims=action_dims)
 critic_model = model_critic_image(input_dims=state_dims)
 
-dummy_n = np.zeros((1, 1, len(action_dims)))
+dummy_n = np.zeros((1, 1, action_dims[0]))
 dummy_1 = np.zeros((1, 1, 1))
 best_reward= -10000000000
 num_episodes= 50000
@@ -123,7 +123,7 @@ for episode in range(num_episodes):
         action = np.squeeze(actor_model.predict([state,dummy_1],steps=1))
         print(action)
         for i in range(len(action)):
-            action[i] = max(min(action[i],env.observation_space.high[i]),env.observation_space.low[i])
+            action[i] = max(min(action[i],env.action_space.high[i]),env.action_space.low[i])
         next_state,reward,done,_=env.step(np.squeeze(action))
         next_state = next_state.reshape((1,) + next_state.shape )
         step+=1
@@ -132,7 +132,7 @@ for episode in range(num_episodes):
         V_this_state = critic_model.predict(state)
         target = reward + hyperparam['gamma']*np.squeeze(V_of_next_state)
         td_error = target - np.squeeze(V_this_state)
-        actor_model.fit([state,td_error],[dummy_n,dummy_n],callbacks=[tensor_board])## THis step can be done over a batch periodically also
+        actor_model.fit([state,td_error],[np.zeros_like(state),np.zeros_like(td_error)],callbacks=[tensor_board])## THis step can be done over a batch periodically also
         critic_model.fit([state],[target],callbacks=[tensor_board])
         state=next_state
     episode_history.append(reward_total)
