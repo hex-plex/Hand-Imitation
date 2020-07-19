@@ -139,6 +139,6 @@ for episode in range(num_episodes):
         state=next_state
     episode_history.append(reward_total)
     print("Episode: {}, Number of Steps : {}, Cumulative reward: {:0.2f}".format(
-            episode, steps, reward_total))
+            episode, step, reward_total))
         
     
