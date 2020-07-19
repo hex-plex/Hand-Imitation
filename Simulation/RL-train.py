@@ -60,7 +60,7 @@ def ppo_loss_np(old_policy_probs,advantages,rewards,valueS):
 
 def model_actor_image(input_dims, output_dims):
     state_input = Input(shape=input_dims)
-    delta = Input(shape=())
+    delta = Input(shape=(1,))
     feature_image = MobileNetV2(include_top=False, weights='imagenet')
     for layer in feature_image.layers:
         layer.trainable = False
@@ -78,6 +78,7 @@ def model_actor_image(input_dims, output_dims):
     model = Model(inputs=[state_input, delta],
                   outputs=[action_tf_var])
     model.compile(optimizer=Adam(lr=hyperparam['actor_lr']),loss=[ppo_loss_actor(delta,norm_dist)])
+    ## This running twice is fine as normal distribution doesnt change but the sampling does for which we have input the delta with the previous sampling it self
     model.summary()
     return model
 
@@ -97,7 +98,7 @@ def model_critic_image(input_dims):
     return model
 
 
-tensor_board = TensorBoard(log_dir=os.getcwd()+'\\logs\\')
+tensor_board = TensorBoard(log_dir=os.getcwd()+'\\logs\\Training\\')
 strea = cv2.VideoCapture(os.getcwd()+"\\dataset\\%06d.png")
 if not strea.isOpened():
     raise Exception("Problem exporting the video stream")
@@ -108,8 +109,7 @@ action_dims = env.action_space.shape
 actor_model = model_actor_image(input_dims=state_dims,output_dims=action_dims)
 critic_model = model_critic_image(input_dims=state_dims)
 
-dummy_n = np.zeros((1, 1, action_dims[0]))
-dummy_1 = np.zeros((1, 1, 1))
+
 best_reward= -10000000000
 num_episodes= 50000
 episode_history=[]
@@ -120,8 +120,8 @@ for episode in range(num_episodes):
     step = 0
     done=False
     while not done:
-        action = np.squeeze(actor_model.predict([state,dummy_1],steps=1))
-        print(action)
+        action = np.squeeze(actor_model.predict([state,np.array([0])],steps=1))
+        #print(action)
         for i in range(len(action)):
             action[i] = max(min(action[i],env.action_space.high[i]),env.action_space.low[i])
         next_state,reward,done,_=env.step(np.squeeze(action))
@@ -132,7 +132,9 @@ for episode in range(num_episodes):
         V_this_state = critic_model.predict(state)
         target = reward + hyperparam['gamma']*np.squeeze(V_of_next_state)
         td_error = target - np.squeeze(V_this_state)
-        actor_model.fit([state,td_error],[np.zeros_like(state),np.zeros_like(td_error)],callbacks=[tensor_board])## THis step can be done over a batch periodically also
+        td_error = np.array([td_error])
+        #print(td_error.shape)
+        actor_model.fit([state,td_error],[np.zeros((1,action_dims[0]))],callbacks=[tensor_board])## THis step can be done over a batch periodically also
         critic_model.fit([state],[target],callbacks=[tensor_board])
         state=next_state
     episode_history.append(reward_total)
