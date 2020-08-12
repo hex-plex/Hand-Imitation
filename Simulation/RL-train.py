@@ -77,7 +77,7 @@ def model_actor_image(input_dims, output_dims):
 
     model = Model(inputs=[state_input, delta],
                   outputs=[action_tf_var])
-    model.compile(optimizer=Adam(lr=hyperparam['actor_lr']),loss=[ppo_loss_actor(delta,norm_dist)])
+    model.compile(optimizer=Adam(lr=hyperparam['actor_lr']),loss=[ppo_loss_actor(delta[0],norm_dist)])
     ## This running twice is fine as normal distribution doesnt change but the sampling does for which we have input the delta with the previous sampling it self
     model.summary()
     return model
@@ -113,12 +113,14 @@ critic_model = model_critic_image(input_dims=state_dims)
 best_reward= -10000000000
 num_episodes= 50000
 episode_history=[]
+batch_size = 25
 for episode in range(num_episodes):
     state = env.reset()
     state = state.reshape((1,)+state.shape  )
     reward_total = 0
     step = 0
     done=False
+    actor_X,actor_Y,critic_X,critic_Y = [], [], [], []    
     while not done:
         action = np.squeeze(actor_model.predict([state,np.array([0])],steps=1))
         #print(action)
@@ -134,11 +136,18 @@ for episode in range(num_episodes):
         td_error = target - np.squeeze(V_this_state)
         td_error = np.array([td_error])
         #print(td_error.shape)
-        actor_model.fit([state,td_error],[np.zeros((1,action_dims[0]))],callbacks=[tensor_board])## THis step can be done over a batch periodically also
-        critic_model.fit([state],[target],callbacks=[tensor_board])
+        actor_X.append([state,td_error])
+        actor_Y.append(np.zeros((1,action_dims[0])))
+        critic_X.append(state)
+        critic_Y.append(target)
+        if step%batch_size==0:
+            actor_model.fit(np.asarray(actor_X,dtype=np.float32),np.array(actor_Y,dtype=np.float32),callbacks=[tensor_board])## THis step can be done over a batch periodically also
+            critic_model.fit(np.asarray(critic_X,dtype=np.float32),np.asarray(critic_Y,dtype=np.float32),callbacks=[tensor_board])
+            actor_X,actor_Y,critic_X,critic_Y = [], [], [], []
         state=next_state
     episode_history.append(reward_total)
     print("Episode: {}, Number of Steps : {}, Cumulative reward: {:0.2f}".format(
             episode, step, reward_total))
-        
-    
+    if (episode+1)%5000:
+        actor_model.save("actor_model-"+str(episode)+".h5")
+        critic_model.save("critic_model-"+str(episode)+".h5")
