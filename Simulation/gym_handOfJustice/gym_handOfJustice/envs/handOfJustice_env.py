@@ -9,6 +9,9 @@ import cv2
 import os
 import inspect
 import time
+
+import pkg_resources
+
 currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(os.path.dirname(currentdir))
@@ -203,8 +206,7 @@ class HandOfJusticeEnv(gym.Env):
         else:
             done = False
 
-        if self.noofrun>300:
-            error=100000000000
+        if self.noofrun>1000:
             done=True
         self.noofrun+=1
         armCam=self.getImage(flag=True)

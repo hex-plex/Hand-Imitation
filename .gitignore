@@ -4,5 +4,13 @@ cartpole.py
 hand.py
 handt.jpg
 hogr/
-Simulation/logs
+Simulation/logs/*
+!Simulation/logs/Training
 Simulation/dataset
+Simulation/checkpoints/*
+!Simulation/checkpoints/actor_model-310.h5
+!Simulation/checkpoints/critic_model-310.h5
+!Simulation/checkpoints/actor_model-312.h5
+!Simulation/checkpoints/critic_model-312.h5
+!Simulation/checkpoints/actor_model-1.h5
+!Simulation/checkpoints/critic_model-1.h5

@@ -30,9 +30,12 @@ class CustomCallBack(tf.keras.callbacks.Callback):
         self.writer = tf.summary.FileWriter(log_dir)
         self.step_number=0
         self.tag=tag
+        self.info={}
+    def on_epoch_begin(self,epoch,logs=None):
+        print("episode "+str(info.get('episode'))+" step "+str(info.get('step')),end=" "+self.tag+" : ")
     def on_epoch_end(self,epoch,logs=None):
         item_to_write={
-            'loss':logs['loss']
+            'loss':logs.get('loss')
             }
         for name, value in item_to_write.items():
             summary = tf.summary.Summary()
@@ -44,8 +47,9 @@ class CustomCallBack(tf.keras.callbacks.Callback):
 
     def step_one(self):
         self.step_number +=1
-    def __call__(self,tag):
+    def __call__(self,tag,info={}):
         self.tag=tag
+        self.info=info
         return self
         
 
@@ -158,6 +162,8 @@ for episode in range(num_episodes):
         for i in range(len(action)):
             action[i] = max(min(action[i],env.action_space.high[i]),env.action_space.low[i])
         next_state,reward,done,_=env.step(np.squeeze(action))
+        if reward<-99999999999:
+            break
         next_state = next_state.reshape((1,) + next_state.shape )
         step+=1
         reward_total +=reward
@@ -167,8 +173,9 @@ for episode in range(num_episodes):
         td_error = target - np.squeeze(V_this_state)
         td_error = np.array([td_error])
         #print(td_error.shape)
-        actor_model.fit([state,td_error],[np.zeros((1,action_dims[0]))],callbacks=[custom_callback('actor')])## THis step can be done over a batch periodically also
-        critic_model.fit([state],[target],callbacks=[custom_callback('critic')])
+        info = {'episode':episode,'step':step}
+        actor_model.fit([state,td_error],[np.zeros((1,action_dims[0]))],callbacks=[custom_callback('actor',info=info)])## THis step can be done over a batch periodically also
+        critic_model.fit([state],[target],callbacks=[custom_callback('critic',info=info)])
         state=next_state
         custom_callback.step_one()
     episode_history.append(reward_total)

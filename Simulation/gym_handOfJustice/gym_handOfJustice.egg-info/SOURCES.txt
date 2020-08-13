@@ -5,6 +5,12 @@ gym_handOfJustice.egg-info/SOURCES.txt
 gym_handOfJustice.egg-info/dependency_links.txt
 gym_handOfJustice.egg-info/top_level.txt
 gym_handOfJustice/envs/__init__.py
+gym_handOfJustice/envs/hand.urdf
 gym_handOfJustice/envs/handOfJustice_env.py
 gym_handOfJustice/envs/hand_controller.py
 gym_handOfJustice/envs/hand_mask.py
+gym_handOfJustice/envs/meshes/arm_reduced.stl
+gym_handOfJustice/envs/meshes/finger_long_reduced.stl
+gym_handOfJustice/envs/meshes/finger_short_reduced.stl
+gym_handOfJustice/envs/meshes/palm.stl
+gym_handOfJustice/envs/meshes/palm_reduced.stl
