@@ -22,6 +22,32 @@ hyperparam={
     'actor_lr': 1e-4,
     'critic_lr': 1e-3
     }
+class CustomCallBack(tf.keras.callbacks.Callback):
+
+    def __init__(self,log_dir=None,tag=''):
+        if log_dir is None:
+            raise Exception("No logging directory received")
+        self.writer = tf.summary.FileWriter(log_dir)
+        self.step_number=0
+        self.tag=tag
+    def on_epoch_end(self,epoch,logs=None):
+        item_to_write={
+            'loss':logs['loss']
+            }
+        for name, value in item_to_write.items():
+            summary = tf.summary.Summary()
+            summary_value = summary.value.add()
+            summary_value.simple_value = value
+            summary_value.tag = self.tag+name
+            self.writer.add_summary(summary,self.step_number)
+            self.writer.flush()
+
+    def step_one(self):
+        self.step_number +=1
+    def __call__(self,tag):
+        self.tag=tag
+        return self
+        
 
 def advantages(valueS,masks,rewardSA):
     returns=[]
@@ -59,17 +85,17 @@ def ppo_loss_np(old_policy_probs,advantages,rewards,valueS):
     return loss
 
 def model_actor_image(input_dims, output_dims):
-    state_input = Input(shape=input_dims)
-    delta = Input(shape=(1,))
+    state_input = Input(shape=input_dims,name="state_input")
+    delta = Input(shape=(1,),name="td_error")
     feature_image = MobileNetV2(include_top=False, weights='imagenet')
     for layer in feature_image.layers:
         layer.trainable = False
 
-    x = Flatten(name = 'flatten')(feature_image(state_input))
-    x = Dense(512,activation='relu' , name='fc1')(x)
-    x = Dense(128,activation='relu' , name='fc2')(x)
-    mu = Dense(output_dims[0])(x)
-    sigma = Dense(output_dims[0])(x)
+    x = Flatten(name = 'flatten_features')(feature_image(state_input))
+    x = Dense(128,activation='relu' , name='forwardc1')(x)
+    x = Dense(32,activation='relu' , name='forward2')(x)
+    mu = Dense(output_dims[0],name="mu")(x)
+    sigma = Dense(output_dims[0],name="sigma")(x)
     sigma = tf.keras.activations.softplus(sigma)+1e-5
     norm_dist = tf.contrib.distributions.Normal(mu,sigma)
     action_tf_var = tf.squeeze(norm_dist.sample(1),axis=0)
@@ -83,14 +109,14 @@ def model_actor_image(input_dims, output_dims):
     return model
 
 def model_critic_image(input_dims):
-    state_input = Input(shape=input_dims)
+    state_input = Input(shape=input_dims,name="state_input")
     feature_image = MobileNetV2(include_top=False, weights='imagenet')
     for layer in feature_image.layers:
         layer.trainable=False
-    x = Flatten(name='flatten')(feature_image(state_input))
-    x = Dense(512,activation='relu',name='fc1')(x)
-    x = Dense(128,activation='relu',name='fc2')(x)
-    Value_function = Dense(1)(x)
+    x = Flatten(name='flatten_features')(feature_image(state_input))
+    x = Dense(128,activation='relu',name='forwardc1')(x)
+    x = Dense(32,activation='relu',name='forwardc2')(x)
+    Value_function = Dense(1,name="value")(x)
 
     model = Model(inputs=[state_input],outputs=[Value_function])
     model.compile(optimizer=Adam(lr=hyperparam['critic_lr']),loss='mse')
@@ -98,7 +124,8 @@ def model_critic_image(input_dims):
     return model
 
 
-tensor_board = TensorBoard(log_dir=os.getcwd()+'\\logs\\Training\\')
+#tensor_board = TensorBoard()
+custom_callback=CustomCallBack(log_dir=os.getcwd()+'\\logs\\Training\\')
 strea = cv2.VideoCapture(os.getcwd()+"\\dataset\\%06d.png")
 if not strea.isOpened():
     raise Exception("Problem exporting the video stream")
@@ -108,8 +135,13 @@ action_dims = env.action_space.shape
 
 actor_model = model_actor_image(input_dims=state_dims,output_dims=action_dims)
 critic_model = model_critic_image(input_dims=state_dims)
-
-
+#actor_json = actor_model.to_json()
+#critic_json = critic_model.to_json()
+#with open("actor_model.json","w") as json_f:
+    #json_f.write(actor_json)
+#with open("critic_model.json","w") as json_f:
+    #json_f.write(critic_json) 
+## Saving a json file is not possible as in tensorflow < 2 there is problem in having layers in same order
 best_reward= -10000000000
 num_episodes= 50000
 episode_history=[]
@@ -119,8 +151,7 @@ for episode in range(num_episodes):
     state = state.reshape((1,)+state.shape  )
     reward_total = 0
     step = 0
-    done=False
-    actor_X,actor_Y,critic_X,critic_Y = [], [], [], []    
+    done=False 
     while not done:
         action = np.squeeze(actor_model.predict([state,np.array([0])],steps=1))
         #print(action)
@@ -136,18 +167,13 @@ for episode in range(num_episodes):
         td_error = target - np.squeeze(V_this_state)
         td_error = np.array([td_error])
         #print(td_error.shape)
-        actor_X.append([state,td_error])
-        actor_Y.append(np.zeros((1,action_dims[0])))
-        critic_X.append(state)
-        critic_Y.append(target)
-        if step%batch_size==0:
-            actor_model.fit(np.asarray(actor_X,dtype=np.float32),np.array(actor_Y,dtype=np.float32),callbacks=[tensor_board])## THis step can be done over a batch periodically also
-            critic_model.fit(np.asarray(critic_X,dtype=np.float32),np.asarray(critic_Y,dtype=np.float32),callbacks=[tensor_board])
-            actor_X,actor_Y,critic_X,critic_Y = [], [], [], []
+        actor_model.fit([state,td_error],[np.zeros((1,action_dims[0]))],callbacks=[custom_callback('actor')])## THis step can be done over a batch periodically also
+        critic_model.fit([state],[target],callbacks=[custom_callback('critic')])
         state=next_state
+        custom_callback.step_one()
     episode_history.append(reward_total)
     print("Episode: {}, Number of Steps : {}, Cumulative reward: {:0.2f}".format(
             episode, step, reward_total))
     if (episode+1)%5000:
-        actor_model.save("actor_model-"+str(episode)+".h5")
-        critic_model.save("critic_model-"+str(episode)+".h5")
+        actor_model.save_weights("checkpoints/actor_model-"+str(episode)+".h5")
+        critic_model.save_weights("checkpoints/critic_model-"+str(episode)+".h5")
