@@ -41,15 +41,15 @@ examples are RL-train.py and RL-Test.py
 - In RL-train we have built the Actor and the critic model using tensorflow
 - In RL-Test we have used stable-baselines SAC model with LnCnnpolicy policy
 - Dataset we used was consisted of 50,000 images meaning 50,000 episodes worth of content.
-	to use the same it could be downloaded from the [drive link](https://drive.google.com/file/d/1YeJecxl8LDR_r3JAWfSbDP4X_klVQfrO/view)
-	----or----
-	```bash
-	wget --no-check-certificate -r 'https://docs.google.com/uc?export=download&id=1YeJecxl8LDR_r3JAWfSbDP4X_klVQfrO' -O dataset.7z 
-	pacman -Sy p7zip-full  
-	# Or any package manager you like
-	7z e dataset.tar.7z
-	7z x dataset.tar.7z
-	```
+	to use the same it could be downloaded from the [drive link](https://drive.google.com/file/d/1YeJecxl8LDR_r3JAWfSbDP4X_klVQfrO/view)<br/>
+	----or----<br/>
+``` console
+wget --no-check-certificate -r 'https://docs.google.com/uc?export=download&id=1YeJecxl8LDR_r3JAWfSbDP4X_klVQfrO' -O dataset.7z 
+pacman -Sy p7zip-full  
+# Or any package manager you like
+7z e dataset.tar.7z
+7z x dataset.tar.7z
+```
 
 ## Output
 These are the best result after training over a limited amount of time
