@@ -40,10 +40,10 @@ we used Actor Critic technique to update the a CNN
 examples are RL-train.py and RL-Test.py 
 - In RL-train we have built the Actor and the critic model using tensorflow
 - In RL-Test we have used stable-baselines SAC model with LnCnnpolicy policy
-- Dataset we used was consisted of 50,000 images meaning 50,000 episodes worth of content.
+- Dataset which we used consisted of 50,000 images that meant content for 50,000 episodes.
 	to use the same it could be downloaded from the [drive link](https://drive.google.com/file/d/1YeJecxl8LDR_r3JAWfSbDP4X_klVQfrO/view)<br/>
 	----or----<br/>
-``` console
+``` console	
 wget --no-check-certificate -r 'https://docs.google.com/uc?export=download&id=1YeJecxl8LDR_r3JAWfSbDP4X_klVQfrO' -O dataset.7z 
 pacman -Sy p7zip-full  
 # Or any package manager you like
