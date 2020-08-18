@@ -7,6 +7,7 @@ hogr/
 Simulation/logs/*
 !Simulation/logs/Training
 Simulation/dataset
+Simulation/dataset.7z
 Simulation/checkpoints/*
 !Simulation/checkpoints/actor_model-310.h5
 !Simulation/checkpoints/critic_model-310.h5
