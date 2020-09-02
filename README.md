@@ -47,8 +47,7 @@ examples are RL-train.py and RL-Test.py
 wget --no-check-certificate -r 'https://docs.google.com/uc?export=download&id=1YeJecxl8LDR_r3JAWfSbDP4X_klVQfrO' -O dataset.7z 
 pacman -Sy p7zip-full  
 # Or any package manager you like
-7z e dataset.tar.7z
-7z x dataset.tar.7z
+7z e dataset.7z
 ```
 
 ## Output
