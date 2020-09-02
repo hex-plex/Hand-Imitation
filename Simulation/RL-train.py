@@ -44,7 +44,15 @@ class CustomCallBack(tf.keras.callbacks.Callback):
             summary_value.tag = self.tag+name
             self.writer.add_summary(summary,self.step_number)
             self.writer.flush()
-
+    def inter_post(self,name,value,n=None):
+        summary = tf.summary.Summary()
+        summary_value = summary.value.add()
+        summary_value.simple_value = value
+        summary_value.tag = name
+        if n is None:
+            n = self.step_number
+        self.writer.add_summary(summary,n)
+        self.writer.flush()
     def step_one(self):
         self.step_number +=1
     def __call__(self,tag,info={}):
@@ -133,7 +141,7 @@ custom_callback=CustomCallBack(log_dir=os.getcwd()+'\\logs\\Training\\')
 strea = cv2.VideoCapture(os.getcwd()+"\\dataset\\%06d.png")
 if not strea.isOpened():
     raise Exception("Problem exporting the video stream")
-env = gym.make('handOfJustice-v0',cap=strea,epsilon=200)
+env = gym.make('handOfJustice-v0',cap=strea,mod="GUI",epsilon=200)
 state_dims = env.observation_space.shape
 action_dims = env.action_space.shape
 
@@ -146,6 +154,8 @@ critic_model = model_critic_image(input_dims=state_dims)
 #with open("critic_model.json","w") as json_f:
     #json_f.write(critic_json) 
 ## Saving a json file is not possible as in tensorflow < 2 there is problem in having layers in same order
+actor_model.load_weights("checkpoints\\actor_model-310.h5")
+critic_model.load_weights("checkpoints\\critic_model-310.h5")
 best_reward= -10000000000
 num_episodes= 50000
 episode_history=[]
@@ -158,10 +168,11 @@ for episode in range(num_episodes):
     done=False 
     while not done:
         action = np.squeeze(actor_model.predict([state,np.array([0])],steps=1))
-        #print(action)
+        print(action)
         for i in range(len(action)):
             action[i] = max(min(action[i],env.action_space.high[i]),env.action_space.low[i])
         next_state,reward,done,_=env.step(np.squeeze(action))
+        print(reward)
         if reward<-99999999999:
             break
         next_state = next_state.reshape((1,) + next_state.shape )
@@ -176,11 +187,13 @@ for episode in range(num_episodes):
         info = {'episode':episode,'step':step}
         actor_model.fit([state,td_error],[np.zeros((1,action_dims[0]))],callbacks=[custom_callback('actor',info=info)])## THis step can be done over a batch periodically also
         critic_model.fit([state],[target],callbacks=[custom_callback('critic',info=info)])
+        custom_callback.inter_post('reward',reward,n=custom_callback.step_number)
         state=next_state
         custom_callback.step_one()
+    custom_callback.inter_post('reward_total',reward_total,n=episode)
     episode_history.append(reward_total)
     print("Episode: {}, Number of Steps : {}, Cumulative reward: {:0.2f}".format(
             episode, step, reward_total))
-    if (episode+1)%5000:
+    if (episode+1)%20==0:
         actor_model.save_weights("checkpoints/actor_model-"+str(episode)+".h5")
         critic_model.save_weights("checkpoints/critic_model-"+str(episode)+".h5")

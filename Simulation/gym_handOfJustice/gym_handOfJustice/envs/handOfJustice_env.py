@@ -105,7 +105,7 @@ class HandOfJusticeEnv(gym.Env):
             self.clientId = p.connect(p.DIRECT)
 
         
-        p.setRealTimeSimulation(1,physicsClientId=self.clientId)
+        #p.setRealTimeSimulation(1,physicsClientId=self.clientId)
         p.resetDebugVisualizerCamera(cameraDistance=2, cameraYaw=0, cameraPitch=-40, cameraTargetPosition=[0,0,2],physicsClientId=self.clientId)
             
         self.action_space = spaces.Box(low=np.array([0]*10+[-0.52,-1.04]) ,high=np.array([1.55]*10+[0.52,1.04]))
@@ -163,7 +163,7 @@ class HandOfJusticeEnv(gym.Env):
         viewMatrix = p.computeViewMatrix(
             position, targetPosition, cameraUpVector=[0, 0, 1],
             physicsClientId=self.clientId)
-        projectionMatrix = p.computeProjectionMatrixFOV(60, 1, 0.02, 5,physicsClientId=self.clientId)
+        projectionMatrix = p.computeProjectionMatrixFOV(60, 1, 0.1, 3.5,physicsClientId=self.clientId)
         img = p.getCameraImage(self.res[0], self.res[1], viewMatrix, projectionMatrix,
                            renderer=p.ER_BULLET_HARDWARE_OPENGL,
                                physicsClientId=self.clientId)
@@ -173,8 +173,8 @@ class HandOfJusticeEnv(gym.Env):
             img = img[:,:,:3]
         else:
             img = img[:,:,:3]
-            img= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-            _,img = cv2.threshold(img,127,255,cv2.THRESH_BINARY_INV)
+            img= cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)
+            _,img = cv2.threshold(img,180,255,cv2.THRESH_BINARY_INV)
 
         return img.astype('uint8')
 
