@@ -141,7 +141,7 @@ custom_callback=CustomCallBack(log_dir=os.getcwd()+'\\logs\\Training\\')
 strea = cv2.VideoCapture(os.getcwd()+"\\dataset\\%06d.png")
 if not strea.isOpened():
     raise Exception("Problem exporting the video stream")
-env = gym.make('handOfJustice-v0',cap=strea,mod="GUI",epsilon=200)
+env = gym.make('handOfJustice-v0',cap=strea,epsilon=200)
 state_dims = env.observation_space.shape
 action_dims = env.action_space.shape
 

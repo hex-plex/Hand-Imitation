@@ -12,7 +12,6 @@ for i in range(5000):
     robo = env.getImage()
     #robo = cv2.cvtColor(robo,cv2.COLOR_BGR2GRAY)
     #_,robo = cv2.threshold(robo,185,255,cv2.THRESH_BINARY_INV)
-    print(p.isConnected(env.clientId))
     handthr = env.hand_thresh(env.target)
     cv2.imshow("robo",robo)
     cv2.imshow("hand",handthr)
