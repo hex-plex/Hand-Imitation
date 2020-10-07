@@ -25,7 +25,7 @@ hyperparam={
 def advantages(valueS,masks,rewardSA):
     returns=[]
     gae=0
-    for i in range(len(rewardSA)-1,-1,-1):  
+    for i in range(len(rewardSA)-1,-1,-1):
         delta = rewardSA[i] + hyperparam['gamma']*valueS[i+1]*masks[i] -valueS[i]
         gae = delta + hyperparam['gamma']*hyperparam['lambda']*masks[i]*gae
         returns.append(gae+valueS[i])
@@ -72,7 +72,7 @@ def model_actor_image(input_dims, output_dims):
     sigma = tf.keras.activations.softplus(sigma)+1e-5
     norm_dist = tf.contrib.distributions.Normal(mu,sigma)
     action_tf_var = tf.squeeze(norm_dist.sample(1),axis=0)
-    
+
 
     model = Model(inputs=[state_input, delta],
                   outputs=[action_tf_var])
@@ -110,8 +110,8 @@ action_dims = env.action_space.shape
 
 actor_model = model_actor_image(input_dims=state_dims,output_dims=action_dims)
 critic_model = model_critic_image(input_dims=state_dims)
-actor_model.load_weights("checkpoints/actor_model-310.h5")
-critic_model.load_weights("checkpoints/critic_model-310.h5")
+actor_model.load_weights("checkpoints/actor_model-20959.h5")
+critic_model.load_weights("checkpoints/critic_model-20959.h5")
 num_episodes = 100
 episode_history=[]
 for episode in range(num_episodes):
@@ -119,7 +119,7 @@ for episode in range(num_episodes):
     state = state.reshape((1,)+state.shape  )
     reward_total = 0
     step = 0
-    done=False 
+    done=False
     while not done:
         action = np.squeeze(actor_model.predict([state,np.array([0])],steps=1))
         for i in range(len(action)):
