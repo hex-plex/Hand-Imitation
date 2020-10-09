@@ -71,6 +71,4 @@ we have used clips from different versions of trained model and environment so t
 Thats all from our side
 
 [Our report](https://docs.google.com/document/d/1_qCllQiJLehKjnqM8FxTcfWmQpp4JSpf9QeZYaxmxv0/edit?usp=sharing)
-
-
-<center> <img src="/Thank_You.gif?raw=true" height="50%" width="50%"><h2>Thank You</h2></img> </center>
+<p align="center"> <img src="/Thank_You.gif?raw=true" height="50%" width="50%"></img> </p>
