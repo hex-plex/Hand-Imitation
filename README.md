@@ -73,4 +73,4 @@ Thats all from our side
 [Our report](https://docs.google.com/document/d/1_qCllQiJLehKjnqM8FxTcfWmQpp4JSpf9QeZYaxmxv0/edit?usp=sharing)
 
 
-![Thank-You](/Thank_You.gif?raw=true)
+<center><img src="/Thank_You.gif?raw=true" > Thank_You</img></center>
