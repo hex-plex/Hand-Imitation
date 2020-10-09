@@ -11,3 +11,4 @@ Simulation/dataset.7z
 Simulation/checkpoints/*
 !Simulation/checkpoints/actor_model-20959.h5
 !Simulation/checkpoints/critic_model-20959.h5
+Thank_You.gif.bak
